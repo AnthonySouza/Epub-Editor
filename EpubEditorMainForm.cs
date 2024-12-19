@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
+using System.Security;
 using ScintillaNET;
 
 using Epub_Editor.Core;
@@ -13,8 +14,10 @@ namespace Epub_Editor
     public partial class EpubEditorMainForm : Form
     {
 
-        ZipArchive epubArchive;
-        EpubFile epubFile;
+        private ZipArchive epubArchive;
+        private EpubFile epubFile;
+
+        public EpubFile EpubFile { get => epubFile; set => epubFile = value; }
 
         public EpubEditorMainForm()
         {
@@ -30,7 +33,7 @@ namespace Epub_Editor
             // Cria uma nova aba no TabControl
             TabPage newTab = new TabPage(Path.GetFileName(filePath));
 
-            Scintilla textEditor = new Scintilla
+            AdvancedTextBox textEditor = new AdvancedTextBox
             {
                 Dock = DockStyle.Fill,
                 Text = fileContend,
@@ -39,8 +42,12 @@ namespace Epub_Editor
                 WrapMode = WrapMode.None,
                 IndentationGuides = IndentView.LookBoth,
                 SelectionBackColor = Core.Core.IntToColor(0x114D9C),
-                LexerLanguage = "Html"
+                LexerLanguage = "Html",
+                HasEdited = false,
+                Hash = Core.Core.GetMd5Hash(fileContend)
             };
+
+            textEditor.TextChanged += TextEditor_TextChanged;
 
             ConfigureHtmlSyntax(textEditor);
 
@@ -52,6 +59,84 @@ namespace Epub_Editor
 
             // Seleciona a aba recém-criada
             tabControl.SelectedTab = newTab;
+        }
+
+        private void TextEditor_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is AdvancedTextBox advancedTextBox)
+            {
+                string newHash = Core.Core.GetMd5Hash(advancedTextBox.Text);
+                if (advancedTextBox.Hash == newHash)
+                {
+                    advancedTextBox.HasEdited = false;
+                    foreach (TabPage tab in tabControl.TabPages)
+                    {
+                        if (tab.Controls.Contains(advancedTextBox))
+                        {
+                            tab.Text = tab.Text.Replace("*", "");
+                            EpubFile.HasEdited = false;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (TabPage tab in tabControl.TabPages)
+                    {
+                        if (tab.Controls.Contains(advancedTextBox))
+                        {
+                            if (tab.Text.Contains("*"))
+                                tab.Text = tab.Text.Replace("*", "");
+                            
+                            tab.Text = string.Format("*{0}", tab.Text);
+                            advancedTextBox.HasEdited = true;
+                            EpubFile.HasEdited = true;
+                        }
+                    }
+                }
+            }
+            CheckHasEdited();
+        }
+            
+        private bool CheckHasEdited()
+        {
+            int ci = 0;
+            foreach (TabPage tab in tabControl.TabPages)
+            {
+                try
+                {
+                    AdvancedTextBox adTextBox = (AdvancedTextBox)tab.Controls[0];
+                    string textBoxHash = Core.Core.GetMd5Hash(adTextBox.Text);
+                    string originalTextHash = "";
+                    string tabFileName = tab.Text.Replace("*", "");
+
+                    for (int i = 0; i < EpubFile.XhtmlFiles.Length; i++)
+                    {   
+                        if (tabFileName == EpubFile.XhtmlFiles[i].FileName)
+                        {
+                            originalTextHash = EpubFile.XhtmlFiles[i].OriginalFileHash;
+                        }
+                    }
+
+                    if(originalTextHash != textBoxHash)
+                    {
+                        ci++;
+                        EpubFile.HasEdited = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            if (ci > 0)
+            {
+                Text = "*Epub Editor";
+                return true;
+            }
+
+            Text = "Epub Editor";
+            return false;
         }
 
         private void ConfigureHtmlSyntax(Scintilla scintilla)
@@ -130,9 +215,9 @@ namespace Epub_Editor
                 if (Directory.Exists(directoryPath))
                 {
 
-                    epubFile = Core.Core.ExportEpubFileToTempDirectory(filePath);
+                    EpubFile = Core.Core.ExportEpubFileToTempDirectory(filePath);
 
-                    Core.Core.ListEpubFiles(epubFile.TempPath, epubTreeView, treeViewMenuStrip);
+                    Core.Core.ListEpubFiles(EpubFile.TempPath, epubTreeView, treeViewMenuStrip);
 
                     /*
                     using (ZipArchive archive = ZipFile.OpenRead(filePath))
@@ -197,7 +282,7 @@ namespace Epub_Editor
                     return;
 
                 string newName = e.Label;
-                string tempFolderFilePath = string.Format("{0}\\{1}", epubFile.TempPath, node.FullPath);
+                string tempFolderFilePath = string.Format("{0}\\{1}", EpubFile.TempPath, node.FullPath);
                 string newPath;
 
 
@@ -234,7 +319,7 @@ namespace Epub_Editor
                 string filePath = e.Node.FullPath; // Caminho completo do arquivo
 
                 // Chama a função para abrir o HTML no TabControl
-                OpenHtmlFileInTab(string.Format("{0}\\{1}", epubFile.TempPath, filePath), e.Node, tabControl);
+                OpenHtmlFileInTab(string.Format("{0}\\{1}", EpubFile.TempPath, filePath), e.Node, tabControl);
             }
 
         }
@@ -333,8 +418,8 @@ namespace Epub_Editor
                 {
 
                     TabPage tabPage = tabControl.TabPages[i];
-                    Scintilla scintillatext = tabPage.Controls[0] as Scintilla;
-                    bool isModified = (bool)scintillatext.CanUndo;
+                    AdvancedTextBox scintillatext = tabPage.Controls[0] as AdvancedTextBox;
+                    bool isModified = (bool)scintillatext.HasEdited;
 
                     if (isModified)
                     {
@@ -342,24 +427,72 @@ namespace Epub_Editor
                         if (dr == DialogResult.Yes) {
 
                             Scintilla contend = tabPage.Controls[0] as Scintilla;
-                            string filePath = epubTreeView.Nodes.Find(tabPage.Text, true)[0].Text;
-                            //Core.Core.SaveHtmlFile(contend, )
+                            string filePath = "";
+
+                            foreach (TreeNode node in epubTreeView.Nodes[0].Nodes)
+                            {
+                                if(node.Text == tabPage.Text.Replace("*", ""))
+                                {
+                                    filePath = string.Format("{0}\\{1}",EpubFile.TempPath, node.FullPath);
+                                    Core.Core.SaveHtmlFile(contend.Text, filePath);
+
+                                    foreach (XhtmlFile xhtmlFile in EpubFile.XhtmlFiles)
+                                    {
+                                        if (xhtmlFile.FileName == tabPage.Text.Replace("*", "")) //Reseta o xhtml
+                                        {
+                                            xhtmlFile.XhtmlContends = contend.Text;
+                                            xhtmlFile.HasEdited = false;
+                                            xhtmlFile.OriginalFileHash = Core.Core.GetMd5Hash(xhtmlFile.XhtmlContends);
+                                            CheckHasEdited();
+                                        }
+                                    }
+
+                                    tabControl.TabPages.RemoveAt(i);
+                                    break;
+                                }
+                            }
 
                         }
                         else if (dr == DialogResult.No) {
-
+                            tabControl.TabPages.RemoveAt(i);
+                            CheckHasEdited();
                         }
                         else if (dr == DialogResult.Cancel) {
-
+                            CheckHasEdited();
+                            return;
                         }
 
+                    } 
+                    else
+                    {
+                        tabControl.TabPages.RemoveAt(i);
                     }
 
-                    tabControl.TabPages.RemoveAt(i);
                     break;
                 }
             }
 
+        }
+
+        private void salvarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Core.Core.ExportToEpubFile(EpubFile, true);
+            if (tabControl.TabPages.Count == 0) 
+            {
+                Core.Core.ExportToEpubFile(EpubFile, true);
+                return; 
+            }
+        }
+
+        private void salvarComoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Core.Core.ExportToEpubFile(EpubFile, false);
+        }
+
+        private void automatizarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormCleanHtml formCleanHtml = new FormCleanHtml(this);
+            formCleanHtml.ShowDialog();
         }
     }
 

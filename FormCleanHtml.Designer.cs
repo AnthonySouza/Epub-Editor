@@ -29,10 +29,6 @@
         private void InitializeComponent()
         {
             this.cleanCodeBtn = new System.Windows.Forms.Button();
-            this.input = new System.Windows.Forms.RichTextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.output = new System.Windows.Forms.RichTextBox();
             this.remCharOverrideCkb = new System.Windows.Forms.CheckBox();
             this.remGenCharOverrideCkb = new System.Windows.Forms.CheckBox();
             this.remEmptySpanCkb = new System.Windows.Forms.CheckBox();
@@ -52,61 +48,13 @@
             // 
             this.cleanCodeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cleanCodeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.cleanCodeBtn.Location = new System.Drawing.Point(903, 628);
+            this.cleanCodeBtn.Location = new System.Drawing.Point(632, 112);
             this.cleanCodeBtn.Name = "cleanCodeBtn";
             this.cleanCodeBtn.Size = new System.Drawing.Size(129, 32);
             this.cleanCodeBtn.TabIndex = 0;
-            this.cleanCodeBtn.Text = "Limpar";
+            this.cleanCodeBtn.Text = "Automatizar";
             this.cleanCodeBtn.UseVisualStyleBackColor = true;
             this.cleanCodeBtn.Click += new System.EventHandler(this.cleanCodeBtn_Click);
-            // 
-            // input
-            // 
-            this.input.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.input.Font = new System.Drawing.Font("Courier New", 10F);
-            this.input.Location = new System.Drawing.Point(13, 38);
-            this.input.Name = "input";
-            this.input.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.input.Size = new System.Drawing.Size(500, 584);
-            this.input.TabIndex = 1;
-            this.input.Text = "";
-            this.input.TextChanged += new System.EventHandler(this.input_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Entrada";
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.label2.Location = new System.Drawing.Point(529, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Saída";
-            // 
-            // output
-            // 
-            this.output.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.output.Font = new System.Drawing.Font("Courier New", 10F);
-            this.output.Location = new System.Drawing.Point(532, 38);
-            this.output.Name = "output";
-            this.output.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.output.Size = new System.Drawing.Size(500, 584);
-            this.output.TabIndex = 3;
-            this.output.Text = "";
-            this.output.MouseClick += new System.Windows.Forms.MouseEventHandler(this.output_MouseClick);
             // 
             // remCharOverrideCkb
             // 
@@ -115,7 +63,7 @@
             this.remCharOverrideCkb.Checked = true;
             this.remCharOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remCharOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remCharOverrideCkb.Location = new System.Drawing.Point(8, 660);
+            this.remCharOverrideCkb.Location = new System.Drawing.Point(15, 15);
             this.remCharOverrideCkb.Name = "remCharOverrideCkb";
             this.remCharOverrideCkb.Size = new System.Drawing.Size(173, 21);
             this.remCharOverrideCkb.TabIndex = 5;
@@ -129,7 +77,7 @@
             this.remGenCharOverrideCkb.Checked = true;
             this.remGenCharOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remGenCharOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remGenCharOverrideCkb.Location = new System.Drawing.Point(8, 741);
+            this.remGenCharOverrideCkb.Location = new System.Drawing.Point(15, 96);
             this.remGenCharOverrideCkb.Name = "remGenCharOverrideCkb";
             this.remGenCharOverrideCkb.Size = new System.Drawing.Size(219, 21);
             this.remGenCharOverrideCkb.TabIndex = 6;
@@ -143,7 +91,7 @@
             this.remEmptySpanCkb.Checked = true;
             this.remEmptySpanCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remEmptySpanCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remEmptySpanCkb.Location = new System.Drawing.Point(8, 714);
+            this.remEmptySpanCkb.Location = new System.Drawing.Point(15, 69);
             this.remEmptySpanCkb.Name = "remEmptySpanCkb";
             this.remEmptySpanCkb.Size = new System.Drawing.Size(164, 21);
             this.remEmptySpanCkb.TabIndex = 7;
@@ -157,7 +105,7 @@
             this.remParaOverrideCkb.Checked = true;
             this.remParaOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remParaOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remParaOverrideCkb.Location = new System.Drawing.Point(8, 687);
+            this.remParaOverrideCkb.Location = new System.Drawing.Point(15, 42);
             this.remParaOverrideCkb.Name = "remParaOverrideCkb";
             this.remParaOverrideCkb.Size = new System.Drawing.Size(173, 21);
             this.remParaOverrideCkb.TabIndex = 8;
@@ -171,7 +119,7 @@
             this.remObjStyleOverrideCkb.Checked = true;
             this.remObjStyleOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remObjStyleOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remObjStyleOverrideCkb.Location = new System.Drawing.Point(8, 768);
+            this.remObjStyleOverrideCkb.Location = new System.Drawing.Point(15, 123);
             this.remObjStyleOverrideCkb.Name = "remObjStyleOverrideCkb";
             this.remObjStyleOverrideCkb.Size = new System.Drawing.Size(261, 21);
             this.remObjStyleOverrideCkb.TabIndex = 9;
@@ -185,7 +133,7 @@
             this.insertBrTagCit.Checked = true;
             this.insertBrTagCit.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertBrTagCit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertBrTagCit.Location = new System.Drawing.Point(300, 660);
+            this.insertBrTagCit.Location = new System.Drawing.Point(307, 15);
             this.insertBrTagCit.Name = "insertBrTagCit";
             this.insertBrTagCit.Size = new System.Drawing.Size(273, 21);
             this.insertBrTagCit.TabIndex = 11;
@@ -199,7 +147,7 @@
             this.insertStFootnote.Checked = true;
             this.insertStFootnote.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertStFootnote.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertStFootnote.Location = new System.Drawing.Point(300, 714);
+            this.insertStFootnote.Location = new System.Drawing.Point(307, 69);
             this.insertStFootnote.Name = "insertStFootnote";
             this.insertStFootnote.Size = new System.Drawing.Size(274, 21);
             this.insertStFootnote.TabIndex = 12;
@@ -213,7 +161,7 @@
             this.insertBrTagTop.Checked = true;
             this.insertBrTagTop.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertBrTagTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertBrTagTop.Location = new System.Drawing.Point(300, 687);
+            this.insertBrTagTop.Location = new System.Drawing.Point(307, 42);
             this.insertBrTagTop.Name = "insertBrTagTop";
             this.insertBrTagTop.Size = new System.Drawing.Size(266, 21);
             this.insertBrTagTop.TabIndex = 13;
@@ -227,7 +175,7 @@
             this.remLangAttrib.Checked = true;
             this.remLangAttrib.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remLangAttrib.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remLangAttrib.Location = new System.Drawing.Point(300, 741);
+            this.remLangAttrib.Location = new System.Drawing.Point(307, 96);
             this.remLangAttrib.Name = "remLangAttrib";
             this.remLangAttrib.Size = new System.Drawing.Size(184, 21);
             this.remLangAttrib.TabIndex = 14;
@@ -241,7 +189,7 @@
             this.resetNumChars.Checked = true;
             this.resetNumChars.CheckState = System.Windows.Forms.CheckState.Checked;
             this.resetNumChars.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.resetNumChars.Location = new System.Drawing.Point(300, 768);
+            this.resetNumChars.Location = new System.Drawing.Point(307, 123);
             this.resetNumChars.Name = "resetNumChars";
             this.resetNumChars.Size = new System.Drawing.Size(213, 21);
             this.resetNumChars.TabIndex = 15;
@@ -252,9 +200,9 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 798);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 156);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1052, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(773, 22);
             this.statusStrip1.TabIndex = 16;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -263,11 +211,11 @@
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.Size = new System.Drawing.Size(300, 16);
             // 
-            // Form1
+            // FormCleanHtml
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1052, 820);
+            this.ClientSize = new System.Drawing.Size(773, 178);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.resetNumChars);
             this.Controls.Add(this.remLangAttrib);
@@ -279,12 +227,9 @@
             this.Controls.Add(this.remEmptySpanCkb);
             this.Controls.Add(this.remGenCharOverrideCkb);
             this.Controls.Add(this.remCharOverrideCkb);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.output);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.input);
             this.Controls.Add(this.cleanCodeBtn);
-            this.Name = "Form1";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Name = "FormCleanHtml";
             this.Text = "Epub Editor";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -296,10 +241,6 @@
         #endregion
 
         private System.Windows.Forms.Button cleanCodeBtn;
-        private System.Windows.Forms.RichTextBox input;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RichTextBox output;
         private System.Windows.Forms.CheckBox remCharOverrideCkb;
         private System.Windows.Forms.CheckBox remGenCharOverrideCkb;
         private System.Windows.Forms.CheckBox remEmptySpanCkb;

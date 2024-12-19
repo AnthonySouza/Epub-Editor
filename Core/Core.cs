@@ -10,6 +10,12 @@ using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Drawing;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Security.Cryptography;
+using HtmlAgilityPack;
+using ScintillaNET;
+using System.Xml.Linq;
+using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace Epub_Editor.Core
 {
@@ -17,19 +23,21 @@ namespace Epub_Editor.Core
     {
 
         //private static EpubFile epubFile;
+        public const string TEMP_PATH_FOLDER = "\\temp\\";
 
         public static string CreateTempDirectory(string tempDirectory)
         {
-            
-            string tempDir = string.Format("{0}{1}{2}", Path.GetDirectoryName(Application.ExecutablePath), "\\temp\\", tempDirectory);
+
+            string tempDir = string.Format("{0}{1}{2}", Path.GetDirectoryName(Application.ExecutablePath), TEMP_PATH_FOLDER, tempDirectory);
 
             try
             {
                 Directory.CreateDirectory(tempDir);
                 return tempDir;
-            } 
-            catch { 
-                throw new Exception(); 
+            }
+            catch
+            {
+                throw new Exception();
             }
 
         }
@@ -59,7 +67,7 @@ namespace Epub_Editor.Core
                 {
                     throw new Exception();
                 }
-                
+
             }
         }
 
@@ -83,7 +91,7 @@ namespace Epub_Editor.Core
         {
             try
             {
-                
+
                 string extractPath = CreateTempDirectory(CreateTempEpubDirName(Path.GetFileName(epubFileDir)));
                 EpubFile epub = new EpubFile();
 
@@ -92,13 +100,81 @@ namespace Epub_Editor.Core
                 epub.OriginalPath = epubFileDir;
                 epub.TempPath = extractPath;
                 epub.FileName = Path.GetFileName(epubFileDir);
+                epub.XhtmlFiles = GetXhtmlEpubArray(extractPath);
+                epub.HasEdited = false;
 
                 return epub;
             }
-            catch 
-            { 
+            catch
+            {
                 throw new Exception();
             }
+        }
+
+        public static XhtmlFile[] GetXhtmlEpubArray(string tempPath)
+        {
+
+            if (Directory.Exists(tempPath))
+            {
+                List<XhtmlFile> list = new List<XhtmlFile>();
+
+                try
+                {
+                    string[] files = Directory.GetFiles(tempPath, "*.xhtml", SearchOption.AllDirectories);
+
+                    foreach (string file in files)
+                    {
+                        string content = File.ReadAllText(file);
+                        list.Add(new XhtmlFile
+                        {
+                            FileName = Path.GetFileName(file),
+                            HasEdited = false,
+                            FileTempPath = file,
+                            OriginalFileHash = Core.GetMd5Hash(content),
+                            XhtmlContends = content
+                        });
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw new Exception();
+                }
+
+                return list.ToArray();
+
+            }
+
+            return null;
+        }
+
+        public static bool ExportToEpubFile(EpubFile epub, bool overrideFile)
+        {
+            try
+            {
+                if (File.Exists(epub.OriginalPath))
+                    if (overrideFile)
+                        File.Delete(epub.OriginalPath); //Se já existir exclui o arquivo original
+                    else
+                    {
+                        SaveFileDialog sfd = new SaveFileDialog();
+                        sfd.Filter = "Arquivo EPUB (*.epub)|*.epub";
+                        sfd.FileName = epub.FileName;
+                        sfd.Title = "Salvar Como";
+                        sfd.InitialDirectory = epub.OriginalPath;
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                            ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
+                        return true;
+                    }
+
+                ZipFile.CreateFromDirectory(epub.TempPath, epub.OriginalPath, CompressionLevel.Optimal, false);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw new Exception();
+            }
+            return false;
         }
 
         public static void ListEpubFiles(ZipArchive archive, System.Windows.Forms.TreeView treeView)
@@ -295,7 +371,7 @@ namespace Epub_Editor.Core
 
         public static string GetXhtmlFileContend(string fileName)
         {
-            
+
             if (File.Exists(fileName))
             {
                 return File.ReadAllText(fileName);
@@ -314,15 +390,550 @@ namespace Epub_Editor.Core
                 }
                 catch (Exception)
                 {
-
                     throw new Exception();
                 }
             }
         }
 
+        public static string GetTempPath()
+        {
+            return string.Format("{0}{1}", Path.GetDirectoryName(Application.ExecutablePath), TEMP_PATH_FOLDER);
+        }
+
         public static Color IntToColor(int rgb)
         {
             return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+        }
+
+        public static string GetMd5Hash(string input)
+        {
+            using (var md5 = MD5.Create())
+            {
+                byte[] inputBytes = System.Text.Encoding.UTF8.GetBytes(input);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                return BytesToHexString(hashBytes);
+            }
+        }
+
+        public static string BytesToHexString(byte[] bytes)
+        {
+            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+            foreach (byte b in bytes)
+            {
+                hex.AppendFormat("{0:x2}", b); // Formato hexadecimal em minúsculas
+            }
+            return hex.ToString();
+        }
+        public static string RemoveCharOverride(HtmlAgilityPack.HtmlDocument document)
+
+        {
+            var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
+            if (nodesWithClass == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var node in nodesWithClass)
+            {
+                var classes = node.GetAttributeValue("class", "").Split(' ')
+                                  .Where(c => !c.StartsWith("CharOverride-"))
+                                  .ToArray();
+
+                if (classes.Length == 0)
+                    node.Attributes.Remove("class");
+                else
+                    node.SetAttributeValue("class", string.Join(" ", classes));
+
+                // Manter o fechamento correto para tags auto-fechadas
+                if (IsSelfClosingTag(node))
+                {
+                    string outerHtml = GetOuterHtmlWithSlash(node);
+                    node.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(outerHtml), node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string RemoveParaOverride(HtmlAgilityPack.HtmlDocument document)
+        {
+            var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
+            if (nodesWithClass == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var node in nodesWithClass)
+            {
+                var classes = node.GetAttributeValue("class", "").Split(' ')
+                                  .Where(c => !c.StartsWith("ParaOverride-"))
+                                  .ToArray();
+
+                if (classes.Length == 0)
+                    node.Attributes.Remove("class");
+                else
+                    node.SetAttributeValue("class", string.Join(" ", classes));
+
+                // Manter o fechamento correto para tags auto-fechadas
+                if (IsSelfClosingTag(node))
+                {
+                    string outerHtml = GetOuterHtmlWithSlash(node);
+                    node.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(outerHtml), node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string RemoveEmptySpan(HtmlAgilityPack.HtmlDocument document)
+        {
+            var emptySpans = document.DocumentNode.SelectNodes("//span[not(@*) and not(normalize-space())]");
+            if (emptySpans == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var span in emptySpans)
+            {
+                span.ParentNode.RemoveChild(span);
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string RemoveIdGenCharOverride(HtmlAgilityPack.HtmlDocument document)
+        {
+            var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
+            if (nodesWithClass == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var node in nodesWithClass)
+            {
+                var classes = node.GetAttributeValue("class", "").Split(' ')
+                                  .Where(c => !c.StartsWith("_idGenCharOverride-"))
+                                  .ToArray();
+
+                if (classes.Length == 0)
+                    node.Attributes.Remove("class");
+                else
+                    node.SetAttributeValue("class", string.Join(" ", classes));
+
+                if (IsSelfClosingTag(node))
+                {
+                    string outerHtml = GetOuterHtmlWithSlash(node);
+                    node.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(outerHtml), node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string RemoveIdGenObjectStyleOverride(HtmlAgilityPack.HtmlDocument document)
+        {
+            var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
+            if (nodesWithClass == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var node in nodesWithClass)
+            {
+                var classes = node.GetAttributeValue("class", "").Split(' ')
+                                  .Where(c => !c.StartsWith("_idGenObjectStyleOverride-"))
+                                  .ToArray();
+
+                if (classes.Length == 0)
+                    node.Attributes.Remove("class");
+                else
+                    node.SetAttributeValue("class", string.Join(" ", classes));
+
+                if (IsSelfClosingTag(node))
+                {
+                    string outerHtml = GetOuterHtmlWithSlash(node);
+                    node.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(outerHtml), node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        private static bool IsSelfClosingTag(HtmlAgilityPack.HtmlNode node)
+        {
+            // Verifica se a tag é auto-fechada
+            var selfClosingTags = new HashSet<string> { "link", "img", "input", "br", "meta", "hr", "area", "base", "col", "embed", "source" };
+            return selfClosingTags.Contains(node.Name);
+        }
+
+        private static string GetOuterHtmlWithSlash(HtmlAgilityPack.HtmlNode node)
+        {
+            // Reconstruir a tag com a barra de fechamento
+            string outerHtml = node.OuterHtml;
+
+            // Adicionar a barra de fechamento se necessário
+            if (outerHtml.EndsWith(">"))
+            {
+                outerHtml = outerHtml.TrimEnd('>') + " />";  // Garante o fechamento adequado
+            }
+
+            return outerHtml;
+        }
+
+        public static string AddBrAroundCitationBlocks(HtmlAgilityPack.HtmlDocument document)
+        {
+
+            // Selecionar todos os parágrafos
+            var paragraphs = document.DocumentNode.SelectNodes("//p");
+            if (paragraphs == null)
+                return document.DocumentNode.OuterHtml;
+
+            bool insideCitationBlock = false;
+            HtmlNode brBefore = null, brAfter = null;
+
+            foreach (var paragraph in paragraphs)
+            {
+                bool isCitation = paragraph.GetAttributeValue("class", "").Equals("citacao");
+
+                if (isCitation)
+                {
+                    // Estamos no início de um bloco de citações
+                    if (!insideCitationBlock)
+                    {
+                        // Adicionar <br/> antes do primeiro bloco de citações
+                        brBefore = HtmlNode.CreateNode("<br/>");
+                        paragraph.ParentNode.InsertBefore(brBefore, paragraph);
+                        insideCitationBlock = true;
+                    }
+                }
+                else
+                {
+                    // Se estávamos em um bloco de citações, mas saímos
+                    if (insideCitationBlock)
+                    {
+                        // Adicionar <br/> após o último bloco de citações
+                        brAfter = HtmlNode.CreateNode("<br/>");
+                        paragraph.ParentNode.InsertBefore(brAfter, paragraph);
+                        insideCitationBlock = false;
+                    }
+                }
+            }
+
+            // Caso todo o HTML termine com um bloco de citações, garantir que <br/> seja adicionado no final
+            if (insideCitationBlock && brAfter == null)
+            {
+                brAfter = HtmlNode.CreateNode("<br/>");
+                paragraphs.Last().ParentNode.InsertAfter(brAfter, paragraphs.Last());
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string AddBrAroundTopicBlocks(HtmlAgilityPack.HtmlDocument document)
+        {
+
+            // Selecionar todos os parágrafos
+            var paragraphs = document.DocumentNode.SelectNodes("//p");
+            if (paragraphs == null)
+                return document.DocumentNode.OuterHtml;
+
+            string[] topicos = { "topico", "topicos", "topico-abc", "topicos-abc", "topico-num", "topicos-num" };
+            bool insideCitationBlock = false;
+            HtmlNode brBefore = null, brAfter = null;
+
+            foreach (var paragraph in paragraphs)
+            {
+
+                foreach (var topic in topicos)
+                {
+                    bool isCitation = paragraph.GetAttributeValue("class", "").Equals(topic);
+
+                    if (isCitation)
+                    {
+                        // Estamos no início de um bloco de topico
+                        if (!insideCitationBlock)
+                        {
+                            // Adicionar <br/> antes do primeiro bloco
+                            brBefore = HtmlNode.CreateNode("<br/>");
+                            paragraph.ParentNode.InsertBefore(brBefore, paragraph);
+                            insideCitationBlock = true;
+                        }
+                    }
+                    else
+                    {
+                        // Se estávamos em um bloco de topico, mas saímos
+                        if (insideCitationBlock)
+                        {
+                            // Adicionar <br/> após o último bloco
+                            brAfter = HtmlNode.CreateNode("<br/>");
+                            paragraph.ParentNode.InsertBefore(brAfter, paragraph);
+                            insideCitationBlock = false;
+                        }
+                    }
+                }
+
+            }
+
+            // Caso todo o HTML termine com um bloco de topico, garantir que <br/> seja adicionado no final
+            if (insideCitationBlock && brAfter == null)
+            {
+                brAfter = HtmlNode.CreateNode("<br/>");
+                paragraphs.Last().ParentNode.InsertAfter(brAfter, paragraphs.Last());
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string AddStToFooterLinks(HtmlAgilityPack.HtmlDocument document)
+        {
+
+            // Seleciona todas as tags <p> com classe "rodape"
+            var footerParagraphs = document.DocumentNode.SelectNodes("//p[contains(@class, 'rodape')]");
+
+            if (footerParagraphs == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var paragraph in footerParagraphs)
+            {
+                // Seleciona todas as tags <a> dentro do parágrafo
+                var links = paragraph.SelectNodes(".//a");
+                if (links == null) continue;
+
+                // Adiciona a classe "st" a cada tag <a>
+                foreach (var link in links)
+                {
+                    var existingClasses = link.GetAttributeValue("class", "");
+                    var updatedClasses = string.Join(" ", existingClasses.Split(' ').Append("st").Distinct());
+                    link.SetAttributeValue("class", updatedClasses.Trim());
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string RemoveLangAndXmlLangAttributes(HtmlAgilityPack.HtmlDocument document)
+        {
+            if (document == null) return document.DocumentNode.OuterHtml;
+
+            // Criar um gerenciador de espaços de nomes
+            XmlNamespaceManager nsmgr = new XmlNamespaceManager(new NameTable());
+            nsmgr.AddNamespace("xml", "http://www.w3.org/XML/1998/namespace");
+
+            // Seleciona nós com atributo lang
+            var nodesWithLangAttributes = document.DocumentNode.SelectNodes("//*[@lang]");
+            if (nodesWithLangAttributes != null)
+            {
+                foreach (var node in nodesWithLangAttributes)
+                {
+                    node.Attributes.Remove("lang");
+                }
+            }
+
+            /*
+            // Seleciona nós com o atributo xml:lang usando o namespace
+            var nodesWithXmlLangAttributes = document.DocumentNode.SelectNodes("//*[@xml:lang]", nsmgr);
+            if (nodesWithXmlLangAttributes != null)
+            {
+                foreach (var node in nodesWithXmlLangAttributes)
+                {
+                    node.Attributes.Remove("xml:lang");
+                }
+            }
+            */
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string ReplaceArabicNumbers(HtmlAgilityPack.HtmlDocument document)
+        {
+            // Dicionário de substituição dos números árabes pelos ocidentais
+            var arabicToWesternNumbers = new Dictionary<char, char>
+            {
+                {'٠', '0'},
+                {'١', '1'},
+                {'٢', '2'},
+                {'٣', '3'},
+                {'٤', '4'},
+                {'٥', '5'},
+                {'٦', '6'},
+                {'٧', '7'},
+                {'٨', '8'},
+                {'٩', '9'}
+            };
+
+            // Percorre todos os nós de texto no HTML
+            var textNodes = document.DocumentNode.SelectNodes("//text()");
+            if (textNodes != null)
+            {
+                foreach (var textNode in textNodes)
+                {
+                    var text = textNode.InnerText;
+                    var updatedText = new String(text.Select(c =>
+                        arabicToWesternNumbers.ContainsKey(c) ? arabicToWesternNumbers[c] : c).ToArray());
+
+                    textNode.InnerHtml = updatedText;
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
+        public static string FormatHtml(HtmlAgilityPack.HtmlDocument document)
+        {
+
+            // Usa um StringBuilder para criar a string formatada
+            StringBuilder formattedHtml = new StringBuilder();
+
+            // Chama o método para formatar o documento
+            FormatNode(document.DocumentNode, formattedHtml, 0);
+
+            return formattedHtml.ToString();
+        }
+
+        private static void FormatNode(HtmlNode node, StringBuilder builder, int indentLevel)
+        {
+            // Adiciona indentação antes da tag
+            builder.AppendLine(new string('\t', indentLevel * 2)); // usa 2 espaços por nível, pode ser ajustado para tabulação
+
+            // Se o nó for uma tag de início (como <div>, <p>, etc)
+            builder.Append("<" + node.Name);
+
+            // Adiciona os atributos da tag, se houver
+            if (node.Attributes.Count > 0)
+            {
+                foreach (var attribute in node.Attributes)
+                {
+                    builder.Append($" {attribute.Name}=\"{attribute.Value}\"");
+                }
+            }
+
+            builder.Append(">");
+
+            // Verifica se o nó contém conteúdo (texto ou outros elementos)
+            if (!node.HasChildNodes)
+            {
+                builder.Append(node.InnerHtml);
+            }
+            else
+            {
+                builder.AppendLine(); // Adiciona uma nova linha após a tag de abertura
+
+                // Formata os filhos do nó com a indentação correta
+                foreach (var child in node.ChildNodes)
+                {
+                    FormatNode(child, builder, indentLevel + 1); // aumenta a indentação para os filhos
+                }
+
+                builder.AppendLine(new string(' ', indentLevel * 2)); // fecha o nó com a indentação correta
+            }
+
+            // Fecha a tag
+            builder.AppendLine($"</{node.Name}>");
+        }
+
+        public static string FindTagAtPosition(int charIndex, RichTextBox rtb)
+        {
+            // Regex para encontrar uma tag
+            string tagPattern = @"<(/?[\w-]+)([^>]*?)>";
+
+            // Procura pela tag que está na posição do clique
+            var match = Regex.Match(rtb.Text, tagPattern);
+            while (match.Success)
+            {
+                if (charIndex >= match.Index && charIndex <= match.Index + match.Length)
+                {
+                    // Retorna o nome da tag
+                    return match.Groups[1].Value;
+                }
+                match = match.NextMatch();
+            }
+            return null;
+        }
+
+        public static int CleanAllXhtmlFiles(
+            EpubFile epub,
+            ToolStripProgressBar progressBar,
+            bool remCharOverrideCkb,
+            bool remParaOverrideCkb,
+            bool remEmptySpanCkb,
+            bool remGenCharOverrideCkb,
+            bool remObjStyleOverrideCkb,
+            bool insertBrTagCit,
+            bool insertBrTagTop,
+            bool insertStFootnote,
+            bool remLangAttrib,
+            bool resetNumChars)
+        {
+
+            if (epub != null)
+            {
+
+                foreach (XhtmlFile xhtml in epub.XhtmlFiles)
+                {
+
+                    var xhtmlAgility = new HtmlAgilityPack.HtmlDocument();
+                    xhtmlAgility.LoadHtml(xhtml.XhtmlContends);
+
+                    if (remCharOverrideCkb)
+                    {
+                        var newXhtml = RemoveCharOverride(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (remParaOverrideCkb)
+                    {
+                        var newXhtml = RemoveParaOverride(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (remEmptySpanCkb)
+                    {
+                        var newXhtml = RemoveEmptySpan(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (remGenCharOverrideCkb)
+                    {
+                        var newXhtml = RemoveIdGenCharOverride(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (remObjStyleOverrideCkb)
+                    {
+                        var newXhtml = RemoveIdGenObjectStyleOverride(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (insertBrTagCit)
+                    {
+                        var newXhtml = AddBrAroundCitationBlocks(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (insertBrTagTop)
+                    {
+                        var newXhtml = AddBrAroundTopicBlocks(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (insertStFootnote)
+                    {
+                        var newXhtml = AddStToFooterLinks(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (remLangAttrib)
+                    {
+                        var newXhtml = RemoveLangAndXmlLangAttributes(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                    if (resetNumChars)
+                    {
+                        var newXhtml = ReplaceArabicNumbers(xhtmlAgility);
+                        xhtml.XhtmlContends = newXhtml;
+                        xhtml.HasEdited = true;
+                    }
+
+                }
+
+                return 1;
+            }
+
+            return 0;
         }
 
     }

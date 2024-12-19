@@ -11,8 +11,10 @@ namespace Epub_Editor.Core
     {
         private string _tabName;
         private string _tabFileNamePath;
+        //private AdvancedTabPage _tabPage;
 
         public string TabName { get => _tabName; set => _tabName = value; }
         public string TabFileNamePath { get => _tabFileNamePath; set => _tabFileNamePath = value; }
+        //public AdvancedTabPage AdvancedTabPage { get => _tabPage; set => _tabPage = value; }
     }
 }

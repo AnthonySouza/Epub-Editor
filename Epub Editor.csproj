@@ -61,11 +61,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AdvancedTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Core\Core.cs" />
     <Compile Include="Core\EpubFile.cs" />
     <Compile Include="Core\TabControler.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Core\XhtmlFile.cs" />
     <Compile Include="EpubEditorMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

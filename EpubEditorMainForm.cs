@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Security;
 using ScintillaNET;
 
-using Epub_Editor.Core;
+using Epub_Editor.AppCore;
 using System.Linq;
 
 namespace Epub_Editor
@@ -24,14 +24,14 @@ namespace Epub_Editor
             InitializeComponent();
         }
 
-        private void OpenHtmlFileInTab(string filePath, TreeNode node, TabControl tabControl)
+        private void OpenHtmlFileInTab(XhtmlFile xhtmlFile, TreeNode node, TabControl tabControl)
         {
 
             // Lê o conteúdo do arquivo
-            string fileContend = Core.Core.GetXhtmlFileContend(filePath);
+            string fileContend = xhtmlFile.XhtmlContends;
             
             // Cria uma nova aba no TabControl
-            TabPage newTab = new TabPage(Path.GetFileName(filePath));
+            TabPage newTab = new TabPage(xhtmlFile.FileName);
 
             AdvancedTextBox textEditor = new AdvancedTextBox
             {
@@ -41,10 +41,10 @@ namespace Epub_Editor
                 WhitespaceBackColor = Color.White,  
                 WrapMode = WrapMode.None,
                 IndentationGuides = IndentView.LookBoth,
-                SelectionBackColor = Core.Core.IntToColor(0x114D9C),
+                SelectionBackColor = Core.IntToColor(0x114D9C),
                 LexerLanguage = "Html",
                 HasEdited = false,
-                Hash = Core.Core.GetMd5Hash(fileContend)
+                Hash = Core.GetMd5Hash(fileContend)
             };
 
             textEditor.TextChanged += TextEditor_TextChanged;
@@ -65,7 +65,7 @@ namespace Epub_Editor
         {
             if (sender is AdvancedTextBox advancedTextBox)
             {
-                string newHash = Core.Core.GetMd5Hash(advancedTextBox.Text);
+                string newHash = Core.GetMd5Hash(advancedTextBox.Text);
                 if (advancedTextBox.Hash == newHash)
                 {
                     advancedTextBox.HasEdited = false;
@@ -105,7 +105,7 @@ namespace Epub_Editor
                 try
                 {
                     AdvancedTextBox adTextBox = (AdvancedTextBox)tab.Controls[0];
-                    string textBoxHash = Core.Core.GetMd5Hash(adTextBox.Text);
+                    string textBoxHash = Core.GetMd5Hash(adTextBox.Text);
                     string originalTextHash = "";
                     string tabFileName = tab.Text.Replace("*", "");
 
@@ -210,26 +210,22 @@ namespace Epub_Editor
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filePath = openFileDialog.FileName;
-                string directoryPath = Path.GetDirectoryName(filePath);
+                //string directoryPath = Path.GetDirectoryName(filePath);
 
-                if (Directory.Exists(directoryPath))
-                {
+                ProcessEpubFile(filePath);
 
-                    EpubFile = Core.Core.ExportEpubFileToTempDirectory(filePath);
-
-                    Core.Core.ListEpubFiles(EpubFile.TempPath, epubTreeView, treeViewMenuStrip);
-
-                    /*
-                    using (ZipArchive archive = ZipFile.OpenRead(filePath))
-                    {
-
-
-                        Core.Core.ListEpubFiles(archive, epubTreeView);
-                        ActiveForm.Text = (string.Format("{0} - {1}", "Epub Editor", filePath));
-                    }
-                    */
-                }
             }
+        }
+
+        public void ProcessEpubFile(string filePath)
+        {
+            //EpubFile = Core.ExportEpubFileToTempDirectory(filePath);
+
+            //Core.ListEpubFiles(EpubFile.TempPath, epubTreeView, treeViewMenuStrip);
+
+            EpubFile = Core.ReadEpubDocument(filePath);
+            Core.PopulateTreeView(epubTreeView, EpubFile);
+
         }
 
         private void renomearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -293,7 +289,7 @@ namespace Epub_Editor
                 if (File.Exists(tempFolderFilePath))
                 {
 
-                    newPath = Core.Core.RenameFile(tempFolderFilePath, newName);
+                    newPath = Core.RenameFile(tempFolderFilePath, newName);
 
                 }
                 else
@@ -319,7 +315,8 @@ namespace Epub_Editor
                 string filePath = e.Node.FullPath; // Caminho completo do arquivo
 
                 // Chama a função para abrir o HTML no TabControl
-                OpenHtmlFileInTab(string.Format("{0}\\{1}", EpubFile.TempPath, filePath), e.Node, tabControl);
+                var treeViewTag = e.Node.Tag as XhtmlFile;
+                OpenHtmlFileInTab(e.node, e.Node, tabControl);
             }
 
         }
@@ -414,7 +411,7 @@ namespace Epub_Editor
                     16
                 );
 
-                if (closeButton.Contains(e.Location))
+                if (closeButton.Contains(e.Location)) 
                 {
 
                     TabPage tabPage = tabControl.TabPages[i];
@@ -434,7 +431,7 @@ namespace Epub_Editor
                                 if(node.Text == tabPage.Text.Replace("*", ""))
                                 {
                                     filePath = string.Format("{0}\\{1}",EpubFile.TempPath, node.FullPath);
-                                    Core.Core.SaveHtmlFile(contend.Text, filePath);
+                                    Core.SaveHtmlFile(contend.Text, filePath);
 
                                     foreach (XhtmlFile xhtmlFile in EpubFile.XhtmlFiles)
                                     {
@@ -442,7 +439,7 @@ namespace Epub_Editor
                                         {
                                             xhtmlFile.XhtmlContends = contend.Text;
                                             xhtmlFile.HasEdited = false;
-                                            xhtmlFile.OriginalFileHash = Core.Core.GetMd5Hash(xhtmlFile.XhtmlContends);
+                                            xhtmlFile.OriginalFileHash = Core.GetMd5Hash(xhtmlFile.XhtmlContends);
                                             CheckHasEdited();
                                         }
                                     }
@@ -476,17 +473,17 @@ namespace Epub_Editor
 
         private void salvarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Core.Core.ExportToEpubFile(EpubFile, true);
-            if (tabControl.TabPages.Count == 0) 
+            Core.ExportToEpubFile(EpubFile, true);
+           /* if (tabControl.TabPages.Count == 0) 
             {
-                Core.Core.ExportToEpubFile(EpubFile, true);
+                Core.ExportToEpubFile(EpubFile, true);
                 return; 
-            }
+            }*/
         }
 
         private void salvarComoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Core.Core.ExportToEpubFile(EpubFile, false);
+            Core.ExportToEpubFile(EpubFile, false);
         }
 
         private void automatizarToolStripMenuItem_Click(object sender, EventArgs e)

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
-namespace Epub_Editor.Core
+namespace Epub_Editor.AppCore
 {
     public class EpubFile
     {

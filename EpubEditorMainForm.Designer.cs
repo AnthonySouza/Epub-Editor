@@ -42,10 +42,21 @@
             this.desfazerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refazerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.corrigirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.caracteresNuméricosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.inserirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tagBRCitacaoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.citacaoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.topicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.charOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.paraOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.idGenCharOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.idGenObjectOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.atributoslangToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.automatizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sigilToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abrirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.epubChackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,19 +70,8 @@
             this.treeViewMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renomearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.apagarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabControl = new Epub_Editor.Core.TabControler();
+            this.tabControl = new Epub_Editor.AppCore.TabControler();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.idGenCharOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.idGenObjectOverrideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.atributoslangToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.corrigirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.caracteresNuméricosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.inserirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tagBRCitacaoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.citacaoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.topicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.automatizarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.treeViewMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -164,19 +164,62 @@
             // desfazerToolStripMenuItem
             // 
             this.desfazerToolStripMenuItem.Name = "desfazerToolStripMenuItem";
-            this.desfazerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.desfazerToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.desfazerToolStripMenuItem.Text = "Desfazer";
             // 
             // refazerToolStripMenuItem
             // 
             this.refazerToolStripMenuItem.Name = "refazerToolStripMenuItem";
-            this.refazerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.refazerToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.refazerToolStripMenuItem.Text = "Refazer";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(136, 6);
+            // 
+            // corrigirToolStripMenuItem
+            // 
+            this.corrigirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.caracteresNuméricosToolStripMenuItem});
+            this.corrigirToolStripMenuItem.Name = "corrigirToolStripMenuItem";
+            this.corrigirToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.corrigirToolStripMenuItem.Text = "Corrigir";
+            // 
+            // caracteresNuméricosToolStripMenuItem
+            // 
+            this.caracteresNuméricosToolStripMenuItem.Name = "caracteresNuméricosToolStripMenuItem";
+            this.caracteresNuméricosToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.caracteresNuméricosToolStripMenuItem.Text = "Caracteres Numéricos";
+            // 
+            // inserirToolStripMenuItem
+            // 
+            this.inserirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tagBRCitacaoToolStripMenuItem});
+            this.inserirToolStripMenuItem.Name = "inserirToolStripMenuItem";
+            this.inserirToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.inserirToolStripMenuItem.Text = "Inserir";
+            // 
+            // tagBRCitacaoToolStripMenuItem
+            // 
+            this.tagBRCitacaoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.citacaoToolStripMenuItem,
+            this.topicoToolStripMenuItem});
+            this.tagBRCitacaoToolStripMenuItem.Name = "tagBRCitacaoToolStripMenuItem";
+            this.tagBRCitacaoToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.tagBRCitacaoToolStripMenuItem.Text = "Tag BR";
+            // 
+            // citacaoToolStripMenuItem
+            // 
+            this.citacaoToolStripMenuItem.Name = "citacaoToolStripMenuItem";
+            this.citacaoToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.citacaoToolStripMenuItem.Text = "Citacao";
+            // 
+            // topicoToolStripMenuItem
+            // 
+            this.topicoToolStripMenuItem.Name = "topicoToolStripMenuItem";
+            this.topicoToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.topicoToolStripMenuItem.Text = "Topico";
             // 
             // removerToolStripMenuItem
             // 
@@ -188,26 +231,56 @@
             this.idGenObjectOverrideToolStripMenuItem,
             this.atributoslangToolStripMenuItem});
             this.removerToolStripMenuItem.Name = "removerToolStripMenuItem";
-            this.removerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removerToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.removerToolStripMenuItem.Text = "Remover";
             // 
             // charOverrideToolStripMenuItem
             // 
             this.charOverrideToolStripMenuItem.Name = "charOverrideToolStripMenuItem";
-            this.charOverrideToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.charOverrideToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.charOverrideToolStripMenuItem.Text = "CharOverride";
             // 
             // paraOverrideToolStripMenuItem
             // 
             this.paraOverrideToolStripMenuItem.Name = "paraOverrideToolStripMenuItem";
-            this.paraOverrideToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.paraOverrideToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.paraOverrideToolStripMenuItem.Text = "ParaOverride";
             // 
             // spanToolStripMenuItem
             // 
             this.spanToolStripMenuItem.Name = "spanToolStripMenuItem";
-            this.spanToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.spanToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.spanToolStripMenuItem.Text = "Span Vazio";
+            // 
+            // idGenCharOverrideToolStripMenuItem
+            // 
+            this.idGenCharOverrideToolStripMenuItem.Name = "idGenCharOverrideToolStripMenuItem";
+            this.idGenCharOverrideToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.idGenCharOverrideToolStripMenuItem.Text = "IdGenCharOverride";
+            // 
+            // idGenObjectOverrideToolStripMenuItem
+            // 
+            this.idGenObjectOverrideToolStripMenuItem.Name = "idGenObjectOverrideToolStripMenuItem";
+            this.idGenObjectOverrideToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.idGenObjectOverrideToolStripMenuItem.Text = "IdGenObjectStyleOverride";
+            // 
+            // atributoslangToolStripMenuItem
+            // 
+            this.atributoslangToolStripMenuItem.Name = "atributoslangToolStripMenuItem";
+            this.atributoslangToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.atributoslangToolStripMenuItem.Text = "Atributos \"lang\"";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(136, 6);
+            // 
+            // automatizarToolStripMenuItem
+            // 
+            this.automatizarToolStripMenuItem.Name = "automatizarToolStripMenuItem";
+            this.automatizarToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.automatizarToolStripMenuItem.Text = "Automatizar";
+            this.automatizarToolStripMenuItem.Click += new System.EventHandler(this.automatizarToolStripMenuItem_Click);
             // 
             // sigilToolStripMenuItem
             // 
@@ -241,7 +314,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.label1.Location = new System.Drawing.Point(859, 68);
+            this.label1.Location = new System.Drawing.Point(918, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 17);
             this.label1.TabIndex = 2;
@@ -250,7 +323,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.button1.Location = new System.Drawing.Point(1112, 60);
+            this.button1.Location = new System.Drawing.Point(1031, 16);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 33);
             this.button1.TabIndex = 3;
@@ -328,79 +401,6 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // idGenCharOverrideToolStripMenuItem
-            // 
-            this.idGenCharOverrideToolStripMenuItem.Name = "idGenCharOverrideToolStripMenuItem";
-            this.idGenCharOverrideToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.idGenCharOverrideToolStripMenuItem.Text = "IdGenCharOverride";
-            // 
-            // idGenObjectOverrideToolStripMenuItem
-            // 
-            this.idGenObjectOverrideToolStripMenuItem.Name = "idGenObjectOverrideToolStripMenuItem";
-            this.idGenObjectOverrideToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.idGenObjectOverrideToolStripMenuItem.Text = "IdGenObjectStyleOverride";
-            // 
-            // atributoslangToolStripMenuItem
-            // 
-            this.atributoslangToolStripMenuItem.Name = "atributoslangToolStripMenuItem";
-            this.atributoslangToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.atributoslangToolStripMenuItem.Text = "Atributos \"lang\"";
-            // 
-            // corrigirToolStripMenuItem
-            // 
-            this.corrigirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.caracteresNuméricosToolStripMenuItem});
-            this.corrigirToolStripMenuItem.Name = "corrigirToolStripMenuItem";
-            this.corrigirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.corrigirToolStripMenuItem.Text = "Corrigir";
-            // 
-            // caracteresNuméricosToolStripMenuItem
-            // 
-            this.caracteresNuméricosToolStripMenuItem.Name = "caracteresNuméricosToolStripMenuItem";
-            this.caracteresNuméricosToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.caracteresNuméricosToolStripMenuItem.Text = "Caracteres Numéricos";
-            // 
-            // inserirToolStripMenuItem
-            // 
-            this.inserirToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tagBRCitacaoToolStripMenuItem});
-            this.inserirToolStripMenuItem.Name = "inserirToolStripMenuItem";
-            this.inserirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.inserirToolStripMenuItem.Text = "Inserir";
-            // 
-            // tagBRCitacaoToolStripMenuItem
-            // 
-            this.tagBRCitacaoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.citacaoToolStripMenuItem,
-            this.topicoToolStripMenuItem});
-            this.tagBRCitacaoToolStripMenuItem.Name = "tagBRCitacaoToolStripMenuItem";
-            this.tagBRCitacaoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.tagBRCitacaoToolStripMenuItem.Text = "Tag BR";
-            // 
-            // citacaoToolStripMenuItem
-            // 
-            this.citacaoToolStripMenuItem.Name = "citacaoToolStripMenuItem";
-            this.citacaoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.citacaoToolStripMenuItem.Text = "Citacao";
-            // 
-            // topicoToolStripMenuItem
-            // 
-            this.topicoToolStripMenuItem.Name = "topicoToolStripMenuItem";
-            this.topicoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.topicoToolStripMenuItem.Text = "Topico";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
-            // 
-            // automatizarToolStripMenuItem
-            // 
-            this.automatizarToolStripMenuItem.Name = "automatizarToolStripMenuItem";
-            this.automatizarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.automatizarToolStripMenuItem.Text = "Automatizar";
-            this.automatizarToolStripMenuItem.Click += new System.EventHandler(this.automatizarToolStripMenuItem_Click);
-            // 
             // EpubEditorMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -447,7 +447,7 @@
         private System.Windows.Forms.ContextMenuStrip treeViewMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem renomearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem apagarToolStripMenuItem;
-        private Core.TabControler tabControl;
+        private AppCore.TabControler tabControl;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem editarToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem desfazerToolStripMenuItem;

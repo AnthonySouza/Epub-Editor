@@ -41,6 +41,7 @@
             this.resetNumChars = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.cancelBtn = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,9 +49,9 @@
             // 
             this.cleanCodeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cleanCodeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.cleanCodeBtn.Location = new System.Drawing.Point(632, 112);
+            this.cleanCodeBtn.Location = new System.Drawing.Point(626, 112);
             this.cleanCodeBtn.Name = "cleanCodeBtn";
-            this.cleanCodeBtn.Size = new System.Drawing.Size(129, 32);
+            this.cleanCodeBtn.Size = new System.Drawing.Size(135, 32);
             this.cleanCodeBtn.TabIndex = 0;
             this.cleanCodeBtn.Text = "Automatizar";
             this.cleanCodeBtn.UseVisualStyleBackColor = true;
@@ -203,6 +204,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 156);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(773, 22);
+            this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 16;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -211,11 +213,25 @@
             this.toolStripProgressBar.Name = "toolStripProgressBar";
             this.toolStripProgressBar.Size = new System.Drawing.Size(300, 16);
             // 
+            // cancelBtn
+            // 
+            this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cancelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.cancelBtn.Location = new System.Drawing.Point(626, 74);
+            this.cancelBtn.Name = "cancelBtn";
+            this.cancelBtn.Size = new System.Drawing.Size(135, 32);
+            this.cancelBtn.TabIndex = 17;
+            this.cancelBtn.Text = "Cancelar";
+            this.cancelBtn.UseVisualStyleBackColor = true;
+            this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
+            // 
             // FormCleanHtml
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(773, 178);
+            this.ControlBox = false;
+            this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.resetNumChars);
             this.Controls.Add(this.remLangAttrib);
@@ -228,9 +244,14 @@
             this.Controls.Add(this.remGenCharOverrideCkb);
             this.Controls.Add(this.remCharOverrideCkb);
             this.Controls.Add(this.cleanCodeBtn);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FormCleanHtml";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Epub Editor";
+            this.Load += new System.EventHandler(this.FormCleanHtml_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -253,6 +274,7 @@
         private System.Windows.Forms.CheckBox resetNumChars;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
+        private System.Windows.Forms.Button cancelBtn;
     }
 }
 

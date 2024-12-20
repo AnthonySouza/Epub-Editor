@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Epub_Editor.Core
+namespace Epub_Editor.AppCore
 {
     public partial class TabControler : TabControl
     {

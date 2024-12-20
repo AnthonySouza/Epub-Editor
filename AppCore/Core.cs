@@ -17,7 +17,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
 
-namespace Epub_Editor.Core
+namespace Epub_Editor.AppCore
 {
     public static class Core
     {
@@ -158,23 +158,42 @@ namespace Epub_Editor.Core
                     else
                     {
                         SaveFileDialog sfd = new SaveFileDialog();
-                        sfd.Filter = "Arquivo EPUB (*.epub)|*.epub";
+                        sfd.Filter = "Arquivo EPUB (*.epub)|*.epub"; 
                         sfd.FileName = epub.FileName;
                         sfd.Title = "Salvar Como";
                         sfd.InitialDirectory = epub.OriginalPath;
                         if (sfd.ShowDialog() == DialogResult.OK)
+
+                            //Salva os arquivos xhtml no temp
+                            foreach (XhtmlFile item in epub.XhtmlFiles)
+                            {
+                                if (item.HasEdited == true)
+                                {
+                                    SaveHtmlFile(item.XhtmlContends, item.FileTempPath);
+                                }
+                            }
+                            
                             ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
+
                         return true;
                     }
 
+                //Salva os arquivos xhtml no temp
+                foreach (XhtmlFile item in epub.XhtmlFiles)
+                {
+                    if (item.HasEdited == true)
+                    {
+                        SaveHtmlFile(item.XhtmlContends, item.FileTempPath);
+                    }
+                }
                 ZipFile.CreateFromDirectory(epub.TempPath, epub.OriginalPath, CompressionLevel.Optimal, false);
                 return true;
             }
-            catch (Exception)
+            catch
             {
-                throw new Exception();
+               throw;
             }
-            return false;
+            return false;   
         }
 
         public static void ListEpubFiles(ZipArchive archive, System.Windows.Forms.TreeView treeView)
@@ -849,6 +868,8 @@ namespace Epub_Editor.Core
             bool resetNumChars)
         {
 
+            progressBar.Maximum = 10;
+
             if (epub != null)
             {
 
@@ -863,6 +884,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveCharOverride(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (remParaOverrideCkb)
@@ -870,6 +892,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveParaOverride(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (remEmptySpanCkb)
@@ -877,6 +900,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveEmptySpan(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (remGenCharOverrideCkb)
@@ -884,6 +908,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveIdGenCharOverride(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (remObjStyleOverrideCkb)
@@ -891,6 +916,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveIdGenObjectStyleOverride(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (insertBrTagCit)
@@ -898,6 +924,7 @@ namespace Epub_Editor.Core
                         var newXhtml = AddBrAroundCitationBlocks(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (insertBrTagTop)
@@ -905,6 +932,7 @@ namespace Epub_Editor.Core
                         var newXhtml = AddBrAroundTopicBlocks(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (insertStFootnote)
@@ -912,6 +940,7 @@ namespace Epub_Editor.Core
                         var newXhtml = AddStToFooterLinks(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (remLangAttrib)
@@ -919,6 +948,7 @@ namespace Epub_Editor.Core
                         var newXhtml = RemoveLangAndXmlLangAttributes(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                     if (resetNumChars)
@@ -926,6 +956,7 @@ namespace Epub_Editor.Core
                         var newXhtml = ReplaceArabicNumbers(xhtmlAgility);
                         xhtml.XhtmlContends = newXhtml;
                         xhtml.HasEdited = true;
+                        progressBar.Value++;
                     }
 
                 }
@@ -934,6 +965,104 @@ namespace Epub_Editor.Core
             }
 
             return 0;
+        }
+
+        public static EpubFile ReadEpubDocument(string filePath)
+        {
+            List<XhtmlFile> xhtmlFiles = new List<XhtmlFile>();
+
+            if (File.Exists(filePath))
+            {
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (ZipArchive archive = new ZipArchive(fs, ZipArchiveMode.Read))
+                {
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (Path.GetExtension(entry.FullName).Equals(".xhtml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+                                string content = reader.ReadToEnd();
+                                string originalHash = CalculateHash(content);
+
+                                xhtmlFiles.Add(new XhtmlFile
+                                {
+                                    FileTempPath = entry.FullName, // Nome no ZIP
+                                    FileName = Path.GetFileName(entry.FullName),
+                                    OriginalFileHash = originalHash,
+                                    XhtmlContends = content,
+                                    HasEdited = false
+                                });
+                            }
+                        }
+                    }
+                }
+
+                return new EpubFile
+                {
+                    FileName = Path.GetFileName(filePath),
+                    TempPath = "\\OEBPS\\",
+                    OriginalPath = filePath,
+                    XhtmlFiles = xhtmlFiles.ToArray(),
+                    HasEdited = false
+                };
+
+            }
+
+            return null;
+        }
+
+        public static void PopulateTreeView(System.Windows.Forms.TreeView treeView, EpubFile epubFile)
+        {
+            treeView.Nodes.Clear();
+
+            ImageList icons = new ImageList();
+            icons.Images.Add("folder", Properties.Resources.pasta);
+            icons.Images.Add("file", Properties.Resources.html);
+
+            treeView.ImageList = icons;
+
+            // Cria o nó raiz
+            TreeNode rootNode = new TreeNode(epubFile.FileName)
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "OEBPS"
+            TreeNode oebpsNode = new TreeNode("OEBPS")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            rootNode.Nodes.Add(oebpsNode);
+
+            foreach(var xhtmlFile in epubFile.XhtmlFiles.Where(f => f.FileTempPath.Contains("OEBPS")))
+            {
+                TreeNode fileNode = new TreeNode(xhtmlFile.FileName)
+                {
+                    ImageKey = "file",
+                    SelectedImageKey = "file",
+                    Tag = xhtmlFile
+                };
+
+                oebpsNode.Nodes.Add(fileNode);
+            }
+
+            rootNode.Expand();
+            treeView.Nodes.Add(rootNode);
+
+        }
+
+        private static string CalculateHash(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+            }
         }
 
     }

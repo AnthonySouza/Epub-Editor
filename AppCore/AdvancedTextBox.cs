@@ -1,6 +1,6 @@
 ﻿using ScintillaNET;
 
-namespace Epub_Editor.Core
+namespace Epub_Editor.AppCore
 {
     public partial class AdvancedTextBox : Scintilla
     {

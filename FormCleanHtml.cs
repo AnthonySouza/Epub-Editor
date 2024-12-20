@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using HtmlAgilityPack;
-using Epub_Editor.Core;
+using Epub_Editor.AppCore;
 
 namespace Epub_Editor
 {
@@ -53,61 +53,61 @@ namespace Epub_Editor
 
             if (remCharOverrideCkb)
             {
-                html = Core.Core.RemoveCharOverride(document);
+                html = Core.RemoveCharOverride(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (remParaOverrideCkb)
             {
-                html = Core.Core.RemoveParaOverride(document);
+                html = Core.RemoveParaOverride(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (remGenCharOverrideCkb)
             {
-                html = Core.Core.RemoveIdGenCharOverride(document);
+                html = Core.RemoveIdGenCharOverride(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (remObjStyleOverrideCkb)
             {
-                html = Core.Core.RemoveIdGenObjectStyleOverride(document);
+                html = Core.RemoveIdGenObjectStyleOverride(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (insertBrTagCit)
             {
-                html = Core.Core.AddBrAroundCitationBlocks(document);
+                html = Core.AddBrAroundCitationBlocks(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (insertBrTagTop)
             {
-                html = Core.Core.AddBrAroundTopicBlocks(document);
+                html = Core.AddBrAroundTopicBlocks(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (insertStFootnote)
             {
-                html = Core.Core.AddStToFooterLinks(document);
+                html = Core.AddStToFooterLinks(document);
                 progressBar.Value = ++currentStep;
             }
             
             if (remLangAttrib)
             {
-                html = Core.Core.RemoveLangAndXmlLangAttributes(document);
+                html = Core.RemoveLangAndXmlLangAttributes(document);
                 progressBar.Value = ++currentStep;
             }
             
             if (resetNumChars)
             {
-                html = Core.Core.ReplaceArabicNumbers(document);
+                html = Core.ReplaceArabicNumbers(document);
                 progressBar.Value = ++currentStep;
             }
 
             if (remEmptySpanCkb)
             {
-                html = Core.Core.RemoveEmptySpan(document);
+                html = Core.RemoveEmptySpan(document);
                 progressBar.Value = ++currentStep;
             }
 
@@ -118,9 +118,24 @@ namespace Epub_Editor
 
         private void cleanCodeBtn_Click(object sender, EventArgs e)
         {
-            Core.Core.CleanAllXhtmlFiles(
+
+            remCharOverrideCkb.Enabled = false;
+            remParaOverrideCkb.Enabled = false;
+            remEmptySpanCkb.Enabled = false;
+            remGenCharOverrideCkb.Enabled = false;
+            remObjStyleOverrideCkb.Enabled = false;
+            insertBrTagCit.Enabled = false;
+            insertBrTagTop.Enabled = false;
+            insertStFootnote.Enabled = false;
+            remLangAttrib.Enabled = false;
+            resetNumChars.Enabled = false;
+            cleanCodeBtn.Enabled = false;
+            cancelBtn.Enabled = false;
+
+
+            Core.CleanAllXhtmlFiles(
                 mForm.EpubFile, 
-                null, 
+                toolStripProgressBar, 
                 remCharOverrideCkb.Checked, 
                 remParaOverrideCkb.Checked, 
                 remEmptySpanCkb.Checked, 
@@ -132,6 +147,32 @@ namespace Epub_Editor
                 remLangAttrib.Checked, 
                 resetNumChars.Checked
                 );
+
+            remCharOverrideCkb.Enabled = true;
+            remParaOverrideCkb.Enabled = true;
+            remEmptySpanCkb.Enabled = true;
+            remGenCharOverrideCkb.Enabled = true;
+            remObjStyleOverrideCkb.Enabled = true;
+            insertBrTagCit.Enabled = true;
+            insertBrTagTop.Enabled = true;
+            insertStFootnote.Enabled = true;
+            remLangAttrib.Enabled = true;
+            resetNumChars.Enabled = true;
+            cleanCodeBtn.Enabled = true;
+            cancelBtn.Enabled = true;
+        }
+
+        private void cancelBtn_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void FormCleanHtml_Load(object sender, EventArgs e)
+        {
+            if(mForm.EpubFile == null)
+            {
+                cleanCodeBtn.Enabled=false;
+            }
         }
     }
 }

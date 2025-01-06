@@ -537,6 +537,32 @@ namespace Epub_Editor.AppCore
             return document.DocumentNode.OuterHtml;
         }
 
+        public static string RemoveIdGenParaOverride(HtmlAgilityPack.HtmlDocument document)
+        {
+            var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
+            if (nodesWithClass == null) return document.DocumentNode.OuterHtml;
+
+            foreach (var node in nodesWithClass)
+            {
+                var classes = node.GetAttributeValue("class", "").Split(' ')
+                                  .Where(c => !c.StartsWith("_idGenParaOverride-"))
+                                  .ToArray();
+
+                if (classes.Length == 0)
+                    node.Attributes.Remove("class");
+                else
+                    node.SetAttributeValue("class", string.Join(" ", classes));
+
+                if (IsSelfClosingTag(node))
+                {
+                    string outerHtml = GetOuterHtmlWithSlash(node);
+                    node.ParentNode.ReplaceChild(HtmlAgilityPack.HtmlNode.CreateNode(outerHtml), node);
+                }
+            }
+
+            return document.DocumentNode.OuterHtml;
+        }
+
         public static string RemoveIdGenObjectStyleOverride(HtmlAgilityPack.HtmlDocument document)
         {
             var nodesWithClass = document.DocumentNode.SelectNodes("//*[@class]");
@@ -853,8 +879,8 @@ namespace Epub_Editor.AppCore
             return null;
         }
 
-        public static int CleanAllXhtmlFiles(
-            EpubFile epub,
+        public static EpubFile CleanAllXhtmlFiles(
+            EpubFile epubFile,
             ToolStripProgressBar progressBar,
             bool remCharOverrideCkb,
             bool remParaOverrideCkb,
@@ -865,106 +891,94 @@ namespace Epub_Editor.AppCore
             bool insertBrTagTop,
             bool insertStFootnote,
             bool remLangAttrib,
-            bool resetNumChars)
+            bool resetNumChars,
+            bool remGenParaOverrideCkb)
         {
 
-            progressBar.Maximum = 10;
-
-            if (epub != null)
+            if (epubFile == null)
             {
-
-                foreach (XhtmlFile xhtml in epub.XhtmlFiles)
-                {
-
-                    var xhtmlAgility = new HtmlAgilityPack.HtmlDocument();
-                    xhtmlAgility.LoadHtml(xhtml.XhtmlContends);
-
-                    if (remCharOverrideCkb)
-                    {
-                        var newXhtml = RemoveCharOverride(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (remParaOverrideCkb)
-                    {
-                        var newXhtml = RemoveParaOverride(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (remEmptySpanCkb)
-                    {
-                        var newXhtml = RemoveEmptySpan(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (remGenCharOverrideCkb)
-                    {
-                        var newXhtml = RemoveIdGenCharOverride(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (remObjStyleOverrideCkb)
-                    {
-                        var newXhtml = RemoveIdGenObjectStyleOverride(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (insertBrTagCit)
-                    {
-                        var newXhtml = AddBrAroundCitationBlocks(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (insertBrTagTop)
-                    {
-                        var newXhtml = AddBrAroundTopicBlocks(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (insertStFootnote)
-                    {
-                        var newXhtml = AddStToFooterLinks(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (remLangAttrib)
-                    {
-                        var newXhtml = RemoveLangAndXmlLangAttributes(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                    if (resetNumChars)
-                    {
-                        var newXhtml = ReplaceArabicNumbers(xhtmlAgility);
-                        xhtml.XhtmlContends = newXhtml;
-                        xhtml.HasEdited = true;
-                        progressBar.Value++;
-                    }
-
-                }
-
-                return 1;
+                return null;
             }
 
-            return 0;
+            progressBar.Maximum = epubFile.XhtmlFiles.Length;
+            progressBar.Value = 0;
+
+            foreach (XhtmlFile xhtml in epubFile.XhtmlFiles)
+            {
+                var xhtmlAgility = new HtmlAgilityPack.HtmlDocument();
+                xhtmlAgility.LoadHtml(xhtml.XhtmlContends);
+
+                if (remCharOverrideCkb)
+                {
+                    xhtml.XhtmlContends = RemoveCharOverride(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remParaOverrideCkb)
+                {
+                    xhtml.XhtmlContends = RemoveParaOverride(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remGenCharOverrideCkb)
+                {
+                    xhtml.XhtmlContends = RemoveIdGenCharOverride(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remGenParaOverrideCkb)
+                {
+                    xhtml.XhtmlContends = RemoveIdGenParaOverride(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remObjStyleOverrideCkb)
+                {
+                    xhtml.XhtmlContends = RemoveIdGenObjectStyleOverride(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (insertBrTagCit)
+                {
+                    xhtml.XhtmlContends = AddBrAroundCitationBlocks(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (insertBrTagTop)
+                {
+                    xhtml.XhtmlContends = AddBrAroundTopicBlocks(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (insertStFootnote)
+                {
+                    xhtml.XhtmlContends = AddStToFooterLinks(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remLangAttrib)
+                {
+                    xhtml.XhtmlContends = RemoveLangAndXmlLangAttributes(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (resetNumChars)
+                {
+                    xhtml.XhtmlContends = ReplaceArabicNumbers(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                if (remEmptySpanCkb)
+                {
+                    xhtml.XhtmlContends = RemoveEmptySpan(xhtmlAgility);
+                    xhtml.HasEdited = true;
+                }
+
+                progressBar.Value++;
+            }
+
+            progressBar.Value = progressBar.Maximum;
+            return epubFile;
         }
 
         public static EpubFile ReadEpubDocument(string filePath)

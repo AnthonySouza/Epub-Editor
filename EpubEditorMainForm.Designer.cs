@@ -70,8 +70,10 @@
             this.treeViewMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renomearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.apagarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabControl = new Epub_Editor.AppCore.TabControler();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tabControl = new Epub_Editor.AppCore.TabControler();
+            this.metadadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.treeViewMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -82,7 +84,8 @@
             this.epubToolStripMenuItem,
             this.editarToolStripMenuItem1,
             this.sigilToolStripMenuItem,
-            this.epubChackerToolStripMenuItem});
+            this.epubChackerToolStripMenuItem,
+            this.metadadosToolStripMenuItem});
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Size = new System.Drawing.Size(1307, 24);
@@ -314,11 +317,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.label1.Location = new System.Drawing.Point(918, 24);
+            this.label1.Location = new System.Drawing.Point(12, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 17);
+            this.label1.Size = new System.Drawing.Size(93, 17);
             this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
+            this.label1.Text = "Nome Ebook:";
             // 
             // button1
             // 
@@ -380,6 +383,19 @@
             this.apagarToolStripMenuItem.Text = "Excluir";
             this.apagarToolStripMenuItem.Click += new System.EventHandler(this.apagarToolStripMenuItem_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.textBox1.Location = new System.Drawing.Point(119, 38);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(488, 23);
+            this.textBox1.TabIndex = 11;
+            // 
             // tabControl
             // 
             this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -396,16 +412,18 @@
             this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
             // 
-            // contextMenuStrip1
+            // metadadosToolStripMenuItem
             // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            this.metadadosToolStripMenuItem.Name = "metadadosToolStripMenuItem";
+            this.metadadosToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.metadadosToolStripMenuItem.Text = "Metadados";
             // 
             // EpubEditorMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1307, 737);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.epubTreeView);
             this.Controls.Add(this.label2);
@@ -468,5 +486,7 @@
         private System.Windows.Forms.ToolStripMenuItem atributoslangToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem automatizarToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ToolStripMenuItem metadadosToolStripMenuItem;
     }
 }

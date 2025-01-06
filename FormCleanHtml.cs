@@ -119,11 +119,14 @@ namespace Epub_Editor
         private void cleanCodeBtn_Click(object sender, EventArgs e)
         {
 
+            EpubFile epub = new EpubFile();
+
             remCharOverrideCkb.Enabled = false;
             remParaOverrideCkb.Enabled = false;
             remEmptySpanCkb.Enabled = false;
             remGenCharOverrideCkb.Enabled = false;
             remObjStyleOverrideCkb.Enabled = false;
+            remGenParaOverrideCkb.Enabled = false;
             insertBrTagCit.Enabled = false;
             insertBrTagTop.Enabled = false;
             insertStFootnote.Enabled = false;
@@ -133,7 +136,7 @@ namespace Epub_Editor
             cancelBtn.Enabled = false;
 
 
-            Core.CleanAllXhtmlFiles(
+            epub = Core.CleanAllXhtmlFiles(
                 mForm.EpubFile, 
                 toolStripProgressBar, 
                 remCharOverrideCkb.Checked, 
@@ -145,13 +148,15 @@ namespace Epub_Editor
                 insertBrTagTop.Checked, 
                 insertStFootnote.Checked, 
                 remLangAttrib.Checked, 
-                resetNumChars.Checked
+                resetNumChars.Checked,
+                remGenParaOverrideCkb.Checked
                 );
 
             remCharOverrideCkb.Enabled = true;
             remParaOverrideCkb.Enabled = true;
             remEmptySpanCkb.Enabled = true;
             remGenCharOverrideCkb.Enabled = true;
+            remGenParaOverrideCkb.Enabled = true;
             remObjStyleOverrideCkb.Enabled = true;
             insertBrTagCit.Enabled = true;
             insertBrTagTop.Enabled = true;
@@ -160,6 +165,11 @@ namespace Epub_Editor
             resetNumChars.Enabled = true;
             cleanCodeBtn.Enabled = true;
             cancelBtn.Enabled = true;
+
+            //recarrega na treeview do mainform o epub com os dados atualizados
+            mForm.ProcessEpub(epub);
+            //this.Close();
+
         }
 
         private void cancelBtn_Click(object sender, EventArgs e)

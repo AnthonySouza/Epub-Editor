@@ -42,6 +42,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.remGenParaOverrideCkb = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,7 +50,7 @@
             // 
             this.cleanCodeBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cleanCodeBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.cleanCodeBtn.Location = new System.Drawing.Point(626, 112);
+            this.cleanCodeBtn.Location = new System.Drawing.Point(626, 153);
             this.cleanCodeBtn.Name = "cleanCodeBtn";
             this.cleanCodeBtn.Size = new System.Drawing.Size(135, 32);
             this.cleanCodeBtn.TabIndex = 0;
@@ -64,7 +65,7 @@
             this.remCharOverrideCkb.Checked = true;
             this.remCharOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remCharOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remCharOverrideCkb.Location = new System.Drawing.Point(15, 15);
+            this.remCharOverrideCkb.Location = new System.Drawing.Point(12, 25);
             this.remCharOverrideCkb.Name = "remCharOverrideCkb";
             this.remCharOverrideCkb.Size = new System.Drawing.Size(173, 21);
             this.remCharOverrideCkb.TabIndex = 5;
@@ -78,7 +79,7 @@
             this.remGenCharOverrideCkb.Checked = true;
             this.remGenCharOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remGenCharOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remGenCharOverrideCkb.Location = new System.Drawing.Point(15, 96);
+            this.remGenCharOverrideCkb.Location = new System.Drawing.Point(12, 106);
             this.remGenCharOverrideCkb.Name = "remGenCharOverrideCkb";
             this.remGenCharOverrideCkb.Size = new System.Drawing.Size(219, 21);
             this.remGenCharOverrideCkb.TabIndex = 6;
@@ -92,7 +93,7 @@
             this.remEmptySpanCkb.Checked = true;
             this.remEmptySpanCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remEmptySpanCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remEmptySpanCkb.Location = new System.Drawing.Point(15, 69);
+            this.remEmptySpanCkb.Location = new System.Drawing.Point(12, 79);
             this.remEmptySpanCkb.Name = "remEmptySpanCkb";
             this.remEmptySpanCkb.Size = new System.Drawing.Size(164, 21);
             this.remEmptySpanCkb.TabIndex = 7;
@@ -106,7 +107,7 @@
             this.remParaOverrideCkb.Checked = true;
             this.remParaOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remParaOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remParaOverrideCkb.Location = new System.Drawing.Point(15, 42);
+            this.remParaOverrideCkb.Location = new System.Drawing.Point(12, 52);
             this.remParaOverrideCkb.Name = "remParaOverrideCkb";
             this.remParaOverrideCkb.Size = new System.Drawing.Size(173, 21);
             this.remParaOverrideCkb.TabIndex = 8;
@@ -120,7 +121,7 @@
             this.remObjStyleOverrideCkb.Checked = true;
             this.remObjStyleOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remObjStyleOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remObjStyleOverrideCkb.Location = new System.Drawing.Point(15, 123);
+            this.remObjStyleOverrideCkb.Location = new System.Drawing.Point(12, 160);
             this.remObjStyleOverrideCkb.Name = "remObjStyleOverrideCkb";
             this.remObjStyleOverrideCkb.Size = new System.Drawing.Size(261, 21);
             this.remObjStyleOverrideCkb.TabIndex = 9;
@@ -134,7 +135,7 @@
             this.insertBrTagCit.Checked = true;
             this.insertBrTagCit.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertBrTagCit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertBrTagCit.Location = new System.Drawing.Point(307, 15);
+            this.insertBrTagCit.Location = new System.Drawing.Point(304, 25);
             this.insertBrTagCit.Name = "insertBrTagCit";
             this.insertBrTagCit.Size = new System.Drawing.Size(273, 21);
             this.insertBrTagCit.TabIndex = 11;
@@ -148,7 +149,7 @@
             this.insertStFootnote.Checked = true;
             this.insertStFootnote.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertStFootnote.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertStFootnote.Location = new System.Drawing.Point(307, 69);
+            this.insertStFootnote.Location = new System.Drawing.Point(304, 79);
             this.insertStFootnote.Name = "insertStFootnote";
             this.insertStFootnote.Size = new System.Drawing.Size(274, 21);
             this.insertStFootnote.TabIndex = 12;
@@ -162,7 +163,7 @@
             this.insertBrTagTop.Checked = true;
             this.insertBrTagTop.CheckState = System.Windows.Forms.CheckState.Checked;
             this.insertBrTagTop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.insertBrTagTop.Location = new System.Drawing.Point(307, 42);
+            this.insertBrTagTop.Location = new System.Drawing.Point(304, 52);
             this.insertBrTagTop.Name = "insertBrTagTop";
             this.insertBrTagTop.Size = new System.Drawing.Size(266, 21);
             this.insertBrTagTop.TabIndex = 13;
@@ -176,7 +177,7 @@
             this.remLangAttrib.Checked = true;
             this.remLangAttrib.CheckState = System.Windows.Forms.CheckState.Checked;
             this.remLangAttrib.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.remLangAttrib.Location = new System.Drawing.Point(307, 96);
+            this.remLangAttrib.Location = new System.Drawing.Point(304, 106);
             this.remLangAttrib.Name = "remLangAttrib";
             this.remLangAttrib.Size = new System.Drawing.Size(184, 21);
             this.remLangAttrib.TabIndex = 14;
@@ -190,7 +191,7 @@
             this.resetNumChars.Checked = true;
             this.resetNumChars.CheckState = System.Windows.Forms.CheckState.Checked;
             this.resetNumChars.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.resetNumChars.Location = new System.Drawing.Point(307, 123);
+            this.resetNumChars.Location = new System.Drawing.Point(304, 133);
             this.resetNumChars.Name = "resetNumChars";
             this.resetNumChars.Size = new System.Drawing.Size(213, 21);
             this.resetNumChars.TabIndex = 15;
@@ -201,7 +202,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 156);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 197);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(773, 22);
             this.statusStrip1.SizingGrip = false;
@@ -217,7 +218,7 @@
             // 
             this.cancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.cancelBtn.Location = new System.Drawing.Point(626, 74);
+            this.cancelBtn.Location = new System.Drawing.Point(626, 115);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(135, 32);
             this.cancelBtn.TabIndex = 17;
@@ -225,12 +226,27 @@
             this.cancelBtn.UseVisualStyleBackColor = true;
             this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
             // 
+            // remGenParaOverrideCkb
+            // 
+            this.remGenParaOverrideCkb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.remGenParaOverrideCkb.AutoSize = true;
+            this.remGenParaOverrideCkb.Checked = true;
+            this.remGenParaOverrideCkb.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.remGenParaOverrideCkb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.remGenParaOverrideCkb.Location = new System.Drawing.Point(12, 133);
+            this.remGenParaOverrideCkb.Name = "remGenParaOverrideCkb";
+            this.remGenParaOverrideCkb.Size = new System.Drawing.Size(219, 21);
+            this.remGenParaOverrideCkb.TabIndex = 18;
+            this.remGenParaOverrideCkb.Text = "Remover _idGenParaOverride";
+            this.remGenParaOverrideCkb.UseVisualStyleBackColor = true;
+            // 
             // FormCleanHtml
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(773, 178);
+            this.ClientSize = new System.Drawing.Size(773, 219);
             this.ControlBox = false;
+            this.Controls.Add(this.remGenParaOverrideCkb);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.resetNumChars);
@@ -275,6 +291,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.CheckBox remGenParaOverrideCkb;
     }
 }
 

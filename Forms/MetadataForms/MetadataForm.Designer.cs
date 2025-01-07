@@ -2,7 +2,7 @@
 
 namespace Epub_Editor.Forms.MetadataForms
 {
-    partial class Metadata : Form
+    partial class MetadataForm : Form
     {
         /// <summary>
         /// Required designer variable.
@@ -98,6 +98,7 @@ namespace Epub_Editor.Forms.MetadataForms
             this.btnAddMetadata.TabIndex = 3;
             this.btnAddMetadata.Text = "Adicionar Metadado";
             this.btnAddMetadata.UseVisualStyleBackColor = true;
+            this.btnAddMetadata.Click += new System.EventHandler(this.btnAddMetadata_Click);
             // 
             // btnAddProperty
             // 
@@ -139,7 +140,7 @@ namespace Epub_Editor.Forms.MetadataForms
             this.btnDown.Text = "ê";
             this.btnDown.UseVisualStyleBackColor = true;
             // 
-            // Metadata
+            // MetadataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -155,7 +156,7 @@ namespace Epub_Editor.Forms.MetadataForms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Metadata";
+            this.Name = "MetadataForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

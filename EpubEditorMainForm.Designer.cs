@@ -318,6 +318,7 @@
             this.metadadosToolStripMenuItem.Name = "metadadosToolStripMenuItem";
             this.metadadosToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
             this.metadadosToolStripMenuItem.Text = "Metadados";
+            this.metadadosToolStripMenuItem.Click += new System.EventHandler(this.metadadosToolStripMenuItem_Click);
             // 
             // label1
             // 

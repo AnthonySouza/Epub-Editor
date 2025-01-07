@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Epub_Editor.AppCore
 {
-    internal class MetadataProperty
+    public class MetadataItem
     {
+
         private string _name;
         private string _info;
         private string _id;
         private bool _hasSubProperties;
 
-        public MetadataProperty(string name, string info, string id, bool hasSubProperties)
+        public MetadataItem(string name, string info, string id, bool hasSubProperties)
         {
             Name = name;
             Info = info;

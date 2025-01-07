@@ -61,12 +61,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCore\AdvancedMetadataListViewItem.cs" />
     <Compile Include="AppCore\AdvancedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="AppCore\Core.cs" />
     <Compile Include="AppCore\EpubFile.cs" />
     <Compile Include="AppCore\Metadata.cs" />
+    <Compile Include="AppCore\MetadataItem.cs" />
     <Compile Include="AppCore\MetadataProperty.cs" />
     <Compile Include="AppCore\TabControler.cs">
       <SubType>Component</SubType>
@@ -90,11 +92,11 @@
     <Compile Include="Forms\MetadataForms\AddMetadataForm.Designer.cs">
       <DependentUpon>AddMetadataForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MetadataForms\Metadata.cs">
+    <Compile Include="Forms\MetadataForms\MetadataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MetadataForms\Metadata.Designer.cs">
-      <DependentUpon>Metadata.cs</DependentUpon>
+    <Compile Include="Forms\MetadataForms\MetadataForm.Designer.cs">
+      <DependentUpon>MetadataForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,8 +109,8 @@
     <EmbeddedResource Include="Forms\MetadataForms\AddMetadataForm.resx">
       <DependentUpon>AddMetadataForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MetadataForms\Metadata.resx">
-      <DependentUpon>Metadata.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MetadataForms\MetadataForm.resx">
+      <DependentUpon>MetadataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

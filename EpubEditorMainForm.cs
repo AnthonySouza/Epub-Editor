@@ -7,6 +7,7 @@ using System.Security;
 using ScintillaNET;
 
 using Epub_Editor.AppCore;
+using Epub_Editor.Forms.MetadataForms;
 using System.Linq;
 
 namespace Epub_Editor
@@ -16,6 +17,9 @@ namespace Epub_Editor
 
         private ZipArchive epubArchive;
         private EpubFile epubFile;
+
+        //Forms
+        MetadataForm metadataForm;
 
         public EpubFile EpubFile { get => epubFile; set => epubFile = value; }
 
@@ -520,6 +524,12 @@ namespace Epub_Editor
         {
             FormCleanHtml formCleanHtml = new FormCleanHtml(this);
             formCleanHtml.ShowDialog();
+        }
+
+        private void metadadosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            metadataForm = new MetadataForm();
+            metadataForm.ShowDialog();
         }
     }
 

@@ -51,8 +51,8 @@ namespace Epub_Editor
                 WhitespaceBackColor = Color.White,
                 WrapMode = WrapMode.None,
                 IndentationGuides = IndentView.LookBoth,
-                SelectionBackColor = Core.IntToColor(0x114D9C),
-                LexerLanguage = "Html",
+                SelectionBackColor = Core.IntToColor(0xCFCFCF),
+                LexerLanguage = "hypertext",
                 HasEdited = false,
                 Hash = Core.GetMd5Hash(fileContend)
             };

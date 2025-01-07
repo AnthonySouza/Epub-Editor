@@ -198,9 +198,12 @@ namespace Epub_Editor
                 "tr track tt type u ul usemap valign value valuetype var version video vlink vspace wbr xmp width xml xmlns");
             scintilla.SetKeywords(1, "class id href src style");
 
+            scintilla.LexerLanguage = "hypertext";
+            scintilla.LexerName = "hypertext";
+
             // Outras configurações
-            scintilla.Margins[0].Width = 20; // Margem para números de linha
-            scintilla.IndentationGuides = IndentView.LookBoth; // Exibe guias de indentação
+            scintilla.Margins[0].Width = 40; // Margem para números de linha
+            scintilla.IndentationGuides = IndentView.LookForward; // Exibe guias de indentação
         }
 
 

@@ -66,6 +66,8 @@
     </Compile>
     <Compile Include="AppCore\Core.cs" />
     <Compile Include="AppCore\EpubFile.cs" />
+    <Compile Include="AppCore\Metadata.cs" />
+    <Compile Include="AppCore\MetadataProperty.cs" />
     <Compile Include="AppCore\TabControler.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -82,11 +84,17 @@
     <Compile Include="FormCleanHtml.Designer.cs">
       <DependentUpon>FormCleanHtml.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Metadados.cs">
+    <Compile Include="Forms\MetadataForms\AddMetadataForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Metadados.Designer.cs">
-      <DependentUpon>Metadados.cs</DependentUpon>
+    <Compile Include="Forms\MetadataForms\AddMetadataForm.Designer.cs">
+      <DependentUpon>AddMetadataForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MetadataForms\Metadata.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MetadataForms\Metadata.Designer.cs">
+      <DependentUpon>Metadata.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,8 +104,11 @@
     <EmbeddedResource Include="FormCleanHtml.resx">
       <DependentUpon>FormCleanHtml.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Metadados.resx">
-      <DependentUpon>Metadados.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MetadataForms\AddMetadataForm.resx">
+      <DependentUpon>AddMetadataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MetadataForms\Metadata.resx">
+      <DependentUpon>Metadata.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -157,6 +168,7 @@
   <ItemGroup>
     <None Include="Resources\audio.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets" Condition="Exists('packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

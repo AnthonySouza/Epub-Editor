@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Epub_Editor.Forms
+namespace Epub_Editor.Forms.MetadataForms
 {
-    public partial class Metadados : Form
+    public partial class Metadata : Form
     {
-        public Metadados()
+        public Metadata()
         {
             InitializeComponent();
         }

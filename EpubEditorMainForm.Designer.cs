@@ -61,6 +61,7 @@
             this.abrirToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.epubChackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abrirToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.metadadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -73,7 +74,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.tabControl = new Epub_Editor.AppCore.TabControler();
-            this.metadadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.treeViewMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -313,6 +313,12 @@
             this.abrirToolStripMenuItem2.Size = new System.Drawing.Size(100, 22);
             this.abrirToolStripMenuItem2.Text = "Abrir";
             // 
+            // metadadosToolStripMenuItem
+            // 
+            this.metadadosToolStripMenuItem.Name = "metadadosToolStripMenuItem";
+            this.metadadosToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.metadadosToolStripMenuItem.Text = "Metadados";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -411,12 +417,6 @@
             this.tabControl.TabName = null;
             this.tabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControl_DrawItem);
             this.tabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseDown);
-            // 
-            // metadadosToolStripMenuItem
-            // 
-            this.metadadosToolStripMenuItem.Name = "metadadosToolStripMenuItem";
-            this.metadadosToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
-            this.metadadosToolStripMenuItem.Text = "Metadados";
             // 
             // EpubEditorMainForm
             // 

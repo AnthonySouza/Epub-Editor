@@ -1,6 +1,6 @@
 ﻿namespace Epub_Editor.Forms.MetadataForms
 {
-    partial class AddMetadataForm
+    partial class AddMetadataPropertyForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,21 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.lstPropertyItems = new System.Windows.Forms.ListView();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.lstMetadataItems = new System.Windows.Forms.ListView();
             this.SuspendLayout();
+            // 
+            // lstPropertyItems
+            // 
+            this.lstPropertyItems.Alignment = System.Windows.Forms.ListViewAlignment.SnapToGrid;
+            this.lstPropertyItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstPropertyItems.FullRowSelect = true;
+            this.lstPropertyItems.GridLines = true;
+            this.lstPropertyItems.HideSelection = false;
+            this.lstPropertyItems.Location = new System.Drawing.Point(12, 12);
+            this.lstPropertyItems.MultiSelect = false;
+            this.lstPropertyItems.Name = "lstPropertyItems";
+            this.lstPropertyItems.Size = new System.Drawing.Size(549, 377);
+            this.lstPropertyItems.TabIndex = 10;
+            this.lstPropertyItems.UseCompatibleStateImageBehavior = false;
+            this.lstPropertyItems.View = System.Windows.Forms.View.List;
+            this.lstPropertyItems.SelectedIndexChanged += new System.EventHandler(this.lstPropertyItems_SelectedIndexChanged);
+            // 
+            // lblInfo
+            // 
+            this.lblInfo.AutoSize = true;
+            this.lblInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.lblInfo.Location = new System.Drawing.Point(12, 392);
+            this.lblInfo.MaximumSize = new System.Drawing.Size(549, 0);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(0, 17);
+            this.lblInfo.TabIndex = 9;
             // 
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.Enabled = false;
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.btnSave.Location = new System.Drawing.Point(315, 472);
+            this.btnSave.Location = new System.Drawing.Point(312, 483);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(122, 28);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 8;
             this.btnSave.Text = "OK";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -51,57 +77,32 @@
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.btnClose.Location = new System.Drawing.Point(443, 472);
+            this.btnClose.Location = new System.Drawing.Point(440, 483);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(122, 28);
-            this.btnClose.TabIndex = 2;
+            this.btnClose.TabIndex = 7;
             this.btnClose.Text = "Cancelar";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // lblInfo
+            // AddMetadataPropertyForm
             // 
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.Location = new System.Drawing.Point(12, 392);
-            this.lblInfo.MaximumSize = new System.Drawing.Size(549, 0);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(0, 17);
-            this.lblInfo.TabIndex = 5;
-            // 
-            // lstMetadataItems
-            // 
-            this.lstMetadataItems.Alignment = System.Windows.Forms.ListViewAlignment.SnapToGrid;
-            this.lstMetadataItems.FullRowSelect = true;
-            this.lstMetadataItems.GridLines = true;
-            this.lstMetadataItems.HideSelection = false;
-            this.lstMetadataItems.Location = new System.Drawing.Point(12, 12);
-            this.lstMetadataItems.MultiSelect = false;
-            this.lstMetadataItems.Name = "lstMetadataItems";
-            this.lstMetadataItems.Size = new System.Drawing.Size(549, 377);
-            this.lstMetadataItems.TabIndex = 6;
-            this.lstMetadataItems.UseCompatibleStateImageBehavior = false;
-            this.lstMetadataItems.View = System.Windows.Forms.View.List;
-            this.lstMetadataItems.SelectedIndexChanged += new System.EventHandler(this.lstMetadataItems_SelectedIndexChanged);
-            // 
-            // AddMetadataForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(573, 508);
-            this.Controls.Add(this.lstMetadataItems);
+            this.ClientSize = new System.Drawing.Size(574, 523);
+            this.Controls.Add(this.lstPropertyItems);
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "AddMetadataForm";
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "AddMetadataPropertyForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Adicionar Metadados";
-            this.TopMost = true;
-            this.Load += new System.EventHandler(this.AddMetadataForm_Load);
+            this.Text = "Adicionar Propriedade";
+            this.Load += new System.EventHandler(this.AddMetadataPropertyForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,9 +110,9 @@
 
         #endregion
 
+        private System.Windows.Forms.ListView lstPropertyItems;
+        private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Label lblInfo;
-        private System.Windows.Forms.ListView lstMetadataItems;
     }
 }

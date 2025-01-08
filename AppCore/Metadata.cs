@@ -54,6 +54,6 @@ namespace Epub_Editor.AppCore
 
         public static MetadataItem[] MetadataItem { get => metadataItem; set => metadataItem = value; }
 
-        //public static MetadataProperty[] MetadataProperty { get => metadataProperty; set => metadataProperty = value; }
+        public static MetadataProperty[] MetadataProperty { get => metadataProperty; set => metadataProperty = value; }
     }
 }

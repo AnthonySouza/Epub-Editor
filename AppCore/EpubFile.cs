@@ -15,6 +15,7 @@ namespace Epub_Editor.AppCore
         private string fileName;
         private bool hasEdited;
         private XhtmlFile[] xhtmlFiles;
+        private MetadataDocument metadata;
 
 
         public EpubFile() { }
@@ -28,10 +29,21 @@ namespace Epub_Editor.AppCore
             HasEdited = hasEdited;
         }
 
+        public EpubFile(string originalPath, string tempPath, string fileName, XhtmlFile[] xhtmlFiles, bool hasEdited, MetadataDocument metadataDocument)
+        {
+            OriginalPath = originalPath;
+            TempPath = tempPath;
+            FileName = fileName;
+            XhtmlFiles = xhtmlFiles;
+            HasEdited = hasEdited;
+            Metadata = metadataDocument;
+        }
+
         public string OriginalPath { get => originalPath; set => originalPath = value; }
         public string TempPath { get => tempPath; set => tempPath = value; }
         public string FileName { get => fileName; set => fileName = value; }
         public bool HasEdited { get => hasEdited; set => hasEdited = value; }
         public XhtmlFile[] XhtmlFiles { get => xhtmlFiles; set => xhtmlFiles = value; }
+        public MetadataDocument Metadata { get => metadata; set => metadata = value; }
     }
 }

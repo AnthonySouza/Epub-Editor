@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Epub_Editor.AppCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,23 @@ namespace Epub_Editor.Forms.MetadataForms
 {
     public partial class MetadataForm : Form
     {
+
+        private MetadataDocument _metadataDocument;
+
         public MetadataForm()
         {
             InitializeComponent();
+        }
+
+        public void ShowDialog(MetadataDocument metadata)
+        {
+
+            if (metadata != null)
+            {
+                MetadataDocument = metadata;
+                Show();
+            }
+            
         }
 
         private void btnAddMetadata_Click(object sender, EventArgs e)
@@ -24,7 +39,7 @@ namespace Epub_Editor.Forms.MetadataForms
 
             addMetadataForm.SendMetadataItem += AddMetadataForm_SendProperty;
 
-            addMetadataForm.ShowDialog();
+            addMetadataForm.ShowDialog(this);
 
         }
 
@@ -32,5 +47,21 @@ namespace Epub_Editor.Forms.MetadataForms
         {
             MessageBox.Show(obj.Info);
         }
+
+        private void btnAddProperty_Click(object sender, EventArgs e)
+        {
+            AddMetadataPropertyForm addMetadataPropertyForm = new AddMetadataPropertyForm();
+
+            addMetadataPropertyForm.SendMetadataProperty += AddMetadataPropertyForm_SendMetadataProperty;
+
+            addMetadataPropertyForm.ShowDialog(this);
+        }
+
+        private void AddMetadataPropertyForm_SendMetadataProperty(AppCore.MetadataProperty obj)
+        {
+            MessageBox.Show(obj.Info);
+        }
+
+        public MetadataDocument MetadataDocument { get => _metadataDocument; set => _metadataDocument = value; }
     }
 }

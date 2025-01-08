@@ -9,6 +9,7 @@ using ScintillaNET;
 using Epub_Editor.AppCore;
 using Epub_Editor.Forms.MetadataForms;
 using System.Linq;
+using System.Data;
 
 namespace Epub_Editor
 {
@@ -528,8 +529,21 @@ namespace Epub_Editor
 
         private void metadadosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            metadataForm = new MetadataForm();
-            metadataForm.ShowDialog();
+
+            //Verifica se os dados de Metadados estão preenchidos, caso contrário, cria uma nova base de matadados para o ebook
+            if (epubFile != null && epubFile.Metadata != null)
+            {
+
+                metadataForm = new MetadataForm();
+                metadataForm.ShowDialog();
+
+            } else
+            {
+
+                //criar novo metadado
+
+            }
+
         }
     }
 

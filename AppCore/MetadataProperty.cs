@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Epub_Editor.AppCore
 {
-    internal class MetadataProperty
+    public class MetadataProperty
     {
         private string _name;
         private string _info;

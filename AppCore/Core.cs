@@ -16,6 +16,7 @@ using ScintillaNET;
 using System.Xml.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Net;
 
 namespace Epub_Editor.AppCore
 {
@@ -24,6 +25,9 @@ namespace Epub_Editor.AppCore
 
         //private static EpubFile epubFile;
         public const string TEMP_PATH_FOLDER = "\\temp\\";
+        public const string METADATA_XML_NAMESPACE = "http://purl.org/dc/elements/1.1/";
+        public const string METADATA_PROPERTY_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
+        public const string DEFAULT_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
 
         public static string CreateTempDirectory(string tempDirectory)
         {
@@ -158,7 +162,7 @@ namespace Epub_Editor.AppCore
                     else
                     {
                         SaveFileDialog sfd = new SaveFileDialog();
-                        sfd.Filter = "Arquivo EPUB (*.epub)|*.epub"; 
+                        sfd.Filter = "Arquivo EPUB (*.epub)|*.epub";
                         sfd.FileName = epub.FileName;
                         sfd.Title = "Salvar Como";
                         sfd.InitialDirectory = epub.OriginalPath;
@@ -172,8 +176,8 @@ namespace Epub_Editor.AppCore
                                     SaveHtmlFile(item.XhtmlContends, item.FileTempPath);
                                 }
                             }
-                            
-                            ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
+
+                        ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
 
                         return true;
                     }
@@ -191,9 +195,9 @@ namespace Epub_Editor.AppCore
             }
             catch
             {
-               throw;
+                throw;
             }
-            return false;   
+            return false;
         }
 
         public static void ListEpubFiles(ZipArchive archive, System.Windows.Forms.TreeView treeView)
@@ -1053,7 +1057,7 @@ namespace Epub_Editor.AppCore
 
             rootNode.Nodes.Add(oebpsNode);
 
-            foreach(var xhtmlFile in epubFile.XhtmlFiles.Where(f => f.FileTempPath.Contains("OEBPS")))
+            foreach (var xhtmlFile in epubFile.XhtmlFiles.Where(f => f.FileTempPath.Contains("OEBPS")))
             {
                 TreeNode fileNode = new TreeNode(xhtmlFile.FileName)
                 {
@@ -1079,5 +1083,35 @@ namespace Epub_Editor.AppCore
             }
         }
 
+        public static MetadataDocument ReadMetadataFromXml(XDocument xmlDocument)
+        {
+
+            if (xmlDocument != null)
+            {
+                var generator = "";
+                var cover = "";
+                var subject = "";
+                var date = "";
+                var source = "";
+                var relation = "";
+                var coverate = "";
+                var rights = "";
+                var language = "";
+
+                var title = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "title").FirstOrDefault()?.Value;
+                var creator = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "creator").FirstOrDefault()?.Value;
+                var publisher = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "publisher").FirstOrDefault()?.Value;
+                var description = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "description").FirstOrDefault()?.Value;
+                //var date = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "date").FirstOrDefault()?.Value;
+                var identifier = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "identifier")
+                                        .Where(e => e.Attribute(METADATA_PROPERTY_XML_NAMESPACE + "scheme")?.Value == "AMAZON")
+                                        .FirstOrDefault()?.Value;
+
+                //return new MetadataDocument(generator, cover, title, creator, subject, description, publisher, date, source, relation, coverate, rights, language);
+
+            }   
+
+            return null;
+        }
     }
 }

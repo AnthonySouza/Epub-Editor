@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Epub_Editor.AppCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,52 +9,50 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Epub_Editor.AppCore;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 namespace Epub_Editor.Forms.MetadataForms
 {
-    public partial class AddMetadataForm : Form
+    public partial class AddMetadataPropertyForm : Form
     {
 
-        public event Action<MetadataItem> SendMetadataItem;
-        
-        private MetadataItem selectedMetadataItem;
+        public event Action<MetadataProperty> SendMetadataProperty;
 
-        public AddMetadataForm()
+        private MetadataProperty selectedMetadataProperty;
+
+        public AddMetadataPropertyForm()
         {
             InitializeComponent();
         }
 
-        private void AddMetadataForm_Load(object sender, EventArgs e)
+        private void AddMetadataPropertyForm_Load(object sender, EventArgs e)
         {
 
-            foreach (var metadataItem in Metadata.MetadataItem)
+            foreach (var metadataProp in Metadata.MetadataProperty)
             {
-                                
-                AdvancedMetadataListViewItem item = new AdvancedMetadataListViewItem() {
-                    MetadataItem = metadataItem,
-                    Text = metadataItem.Name,
-                    ToolTipText = metadataItem.Info
+
+                AdvancedMetadataListViewItem item = new AdvancedMetadataListViewItem()
+                {
+                    MetadataProperty = metadataProp,
+                    Text = metadataProp.Name,
+                    ToolTipText = metadataProp.Info
                 };
 
-                lstMetadataItems.Items.Add(item);
+                lstPropertyItems.Items.Add(item);
 
             }
 
         }
 
-        private void lstMetadataItems_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstPropertyItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Verifica se o sender é um ListView
-            if (sender is System.Windows.Forms.ListView listView)
+            if (sender is ListView listView)
             {
                 // Verifica se há itens selecionados
                 if (listView.SelectedItems.Count > 0)
                 {
                     // Atualiza o texto do label com o ToolTipText do primeiro item selecionado
                     lblInfo.Text = listView.SelectedItems[0].ToolTipText;
-                    selectedMetadataItem = ((AdvancedMetadataListViewItem)listView.SelectedItems[0]).MetadataItem;
+                    selectedMetadataProperty = ((AdvancedMetadataListViewItem)listView.SelectedItems[0]).MetadataProperty;
                     btnSave.Enabled = true;
                 }
                 else
@@ -71,18 +70,16 @@ namespace Epub_Editor.Forms.MetadataForms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-
             // Verifica se há itens selecionados
-            if (lstMetadataItems.SelectedItems.Count > 0)
+            if (lstPropertyItems.SelectedItems.Count > 0)
             {
-                SendMetadataItem?.Invoke(selectedMetadataItem);
+                SendMetadataProperty?.Invoke(selectedMetadataProperty);
                 Close();
             }
             else
             {
                 return;
             }
-
         }
 
         private void btnClose_Click(object sender, EventArgs e)

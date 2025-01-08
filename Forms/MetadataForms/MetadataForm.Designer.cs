@@ -109,6 +109,7 @@ namespace Epub_Editor.Forms.MetadataForms
             this.btnAddProperty.TabIndex = 4;
             this.btnAddProperty.Text = "Adicionar Propriedade";
             this.btnAddProperty.UseVisualStyleBackColor = true;
+            this.btnAddProperty.Click += new System.EventHandler(this.btnAddProperty_Click);
             // 
             // btnRemoveMetadata
             // 

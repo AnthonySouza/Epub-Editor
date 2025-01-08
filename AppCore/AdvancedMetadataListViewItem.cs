@@ -11,7 +11,9 @@ namespace Epub_Editor.AppCore
     {
 
         private MetadataItem metadataItem;
+        private MetadataProperty metadataProperty;
 
         public MetadataItem MetadataItem { get => metadataItem; set => metadataItem = value; }
+        public MetadataProperty MetadataProperty { get => metadataProperty; set => metadataProperty = value; }
     }
 }

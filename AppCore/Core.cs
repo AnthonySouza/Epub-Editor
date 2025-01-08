@@ -665,53 +665,46 @@ namespace Epub_Editor.AppCore
 
         public static string AddBrAroundTopicBlocks(HtmlAgilityPack.HtmlDocument document)
         {
-
             // Selecionar todos os parágrafos
             var paragraphs = document.DocumentNode.SelectNodes("//p");
             if (paragraphs == null)
                 return document.DocumentNode.OuterHtml;
 
-            string[] topicos = { "topico", "topicos", "topico-abc", "topicos-abc", "topico-num", "topicos-num" };
+            string[] topicos = { "topico", "topicos", "topico-abc", "topicos-abc", "topico-num", "topicos-num", "topico-abc-vazio", "topicos-abc-vazio", "topico-rom", "topicos-rom" };
             bool insideCitationBlock = false;
-            HtmlNode brBefore = null, brAfter = null;
+            HtmlNode brBefore = null;
 
             foreach (var paragraph in paragraphs)
             {
+                // Verificar se o parágrafo atual pertence a um tópico
+                bool isCitation = topicos.Contains(paragraph.GetAttributeValue("class", ""));
 
-                foreach (var topic in topicos)
+                if (isCitation)
                 {
-                    bool isCitation = paragraph.GetAttributeValue("class", "").Equals(topic);
-
-                    if (isCitation)
+                    if (!insideCitationBlock)
                     {
-                        // Estamos no início de um bloco de topico
-                        if (!insideCitationBlock)
-                        {
-                            // Adicionar <br/> antes do primeiro bloco
-                            brBefore = HtmlNode.CreateNode("<br/>");
-                            paragraph.ParentNode.InsertBefore(brBefore, paragraph);
-                            insideCitationBlock = true;
-                        }
-                    }
-                    else
-                    {
-                        // Se estávamos em um bloco de topico, mas saímos
-                        if (insideCitationBlock)
-                        {
-                            // Adicionar <br/> após o último bloco
-                            brAfter = HtmlNode.CreateNode("<br/>");
-                            paragraph.ParentNode.InsertBefore(brAfter, paragraph);
-                            insideCitationBlock = false;
-                        }
+                        // Adicionar <br/> antes do primeiro bloco de tópicos
+                        brBefore = HtmlNode.CreateNode("<br/>");
+                        paragraph.ParentNode.InsertBefore(brBefore, paragraph);
+                        insideCitationBlock = true;
                     }
                 }
-
+                else
+                {
+                    if (insideCitationBlock)
+                    {
+                        // Adicionar <br/> após o último bloco de tópicos
+                        var brAfter = HtmlNode.CreateNode("<br/>");
+                        paragraph.ParentNode.InsertBefore(brAfter, paragraph);
+                        insideCitationBlock = false;
+                    }
+                }
             }
 
-            // Caso todo o HTML termine com um bloco de topico, garantir que <br/> seja adicionado no final
-            if (insideCitationBlock && brAfter == null)
+            // Caso o bloco de tópicos termine no final do documento, adicionar <br/> ao final
+            if (insideCitationBlock)
             {
-                brAfter = HtmlNode.CreateNode("<br/>");
+                var brAfter = HtmlNode.CreateNode("<br/>");
                 paragraphs.Last().ParentNode.InsertAfter(brAfter, paragraphs.Last());
             }
 

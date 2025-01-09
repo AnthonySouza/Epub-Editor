@@ -71,6 +71,7 @@
     <Compile Include="AppCore\Identifier.cs" />
     <Compile Include="AppCore\IdentifierScheme.cs" />
     <Compile Include="AppCore\Language.cs" />
+    <Compile Include="AppCore\LanguageCodes.cs" />
     <Compile Include="AppCore\Metadata.cs" />
     <Compile Include="AppCore\MetadataDocument.cs" />
     <Compile Include="AppCore\MetadataItem.cs" />

@@ -164,6 +164,7 @@ namespace Epub_Editor.Forms.MetadataForms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Metadados";
             this.TopMost = true;
+            this.Load += new System.EventHandler(this.MetadataForm_Load);
             this.ResumeLayout(false);
 
         }

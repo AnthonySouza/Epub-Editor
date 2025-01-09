@@ -14,7 +14,11 @@ namespace Epub_Editor.Forms.MetadataForms
     public partial class MetadataForm : Form
     {
 
+        //variaveis
         private MetadataDocument _metadataDocument;
+
+        //eventos
+        public event Action<MetadataDocument> MetadataOPFChangedEvent;
 
         public MetadataForm()
         {
@@ -63,5 +67,10 @@ namespace Epub_Editor.Forms.MetadataForms
         }
 
         public MetadataDocument MetadataDocument { get => _metadataDocument; set => _metadataDocument = value; }
+
+        private void MetadataForm_Load(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

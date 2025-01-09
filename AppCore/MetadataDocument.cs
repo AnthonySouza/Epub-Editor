@@ -24,6 +24,11 @@ namespace Epub_Editor.AppCore
         private Language[] _language;
         private Identifier[] _identifier;
 
+        public MetadataDocument()
+        {
+            
+        }
+
         public MetadataDocument(string generator)
         {
             Generator = generator;

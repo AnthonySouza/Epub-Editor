@@ -28,6 +28,7 @@ namespace Epub_Editor.AppCore
         public const string METADATA_XML_NAMESPACE = "http://purl.org/dc/elements/1.1/";
         public const string METADATA_PROPERTY_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
         public const string DEFAULT_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
+        public const string CONTENT_OPF_FILENAME = "content.opf";
 
         public static string CreateTempDirectory(string tempDirectory)
         {
@@ -981,6 +982,7 @@ namespace Epub_Editor.AppCore
         public static EpubFile ReadEpubDocument(string filePath)
         {
             List<XhtmlFile> xhtmlFiles = new List<XhtmlFile>();
+            MetadataDocument metadata = new MetadataDocument();
 
             if (File.Exists(filePath))
             {
@@ -990,6 +992,7 @@ namespace Epub_Editor.AppCore
                 {
                     foreach (var entry in archive.Entries)
                     {
+                        //faz a leitura de todos os arquivos .xhtml
                         if (Path.GetExtension(entry.FullName).Equals(".xhtml", StringComparison.OrdinalIgnoreCase))
                         {
                             using (StreamReader reader = new StreamReader(entry.Open()))
@@ -1007,6 +1010,19 @@ namespace Epub_Editor.AppCore
                                 });
                             }
                         }
+
+                        //faz a leitura do content.opf
+                        if(Path.GetExtension(entry.FullName).Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+                                string content = reader.ReadToEnd();
+                                XDocument xDocument = LoadContentOPFXml(content);
+
+                                metadata = ReadMetadataFromXml(xDocument);
+
+                            }
+                        }
                     }
                 }
 
@@ -1016,7 +1032,8 @@ namespace Epub_Editor.AppCore
                     TempPath = "\\OEBPS\\",
                     OriginalPath = filePath,
                     XhtmlFiles = xhtmlFiles.ToArray(),
-                    HasEdited = false
+                    HasEdited = false,
+                    Metadata = metadata
                 };
 
             }
@@ -1076,11 +1093,21 @@ namespace Epub_Editor.AppCore
             }
         }
 
+        public static XDocument LoadContentOPFXml(string opfXmlFile)
+        {
+                
+            return XDocument.Parse(opfXmlFile);
+
+        }
+
         public static MetadataDocument ReadMetadataFromXml(XDocument xmlDocument)
         {
 
             if (xmlDocument != null)
             {
+
+                //Faz a leitura dos metadados do content.opf
+
                 var generator = "";
                 var cover = "";
                 var subject = "";
@@ -1095,6 +1122,7 @@ namespace Epub_Editor.AppCore
                 var creator = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "creator").FirstOrDefault()?.Value;
                 var publisher = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "publisher").FirstOrDefault()?.Value;
                 var description = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "description").FirstOrDefault()?.Value;
+
                 //var date = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "date").FirstOrDefault()?.Value;
                 var identifier = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "identifier")
                                         .Where(e => e.Attribute(METADATA_PROPERTY_XML_NAMESPACE + "scheme")?.Value == "AMAZON")

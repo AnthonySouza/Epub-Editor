@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Reflection;
 
 namespace Epub_Editor.AppCore
 {
@@ -1016,10 +1017,9 @@ namespace Epub_Editor.AppCore
                         {
                             using (StreamReader reader = new StreamReader(entry.Open()))
                             {
-                                string content = reader.ReadToEnd();
-                                XDocument xDocument = LoadContentOPFXml(content);
 
-                                metadata = ReadMetadataFromXml(xDocument);
+                                string content = reader.ReadToEnd();
+                                metadata = ReadMetadataFromXml(LoadContentOPFXml(content));
 
                             }
                         }
@@ -1093,40 +1093,53 @@ namespace Epub_Editor.AppCore
             }
         }
 
-        public static XDocument LoadContentOPFXml(string opfXmlFile)
+        public static XmlDocument LoadContentOPFXml(string opfXmlData)
         {
                 
-            return XDocument.Parse(opfXmlFile);
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(opfXmlData);
+            return doc;
 
         }
 
-        public static MetadataDocument ReadMetadataFromXml(XDocument xmlDocument)
+        public static MetadataDocument ReadMetadataFromXml(XmlDocument xmlDocument)
         {
 
             if (xmlDocument != null)
             {
 
-                //Faz a leitura dos metadados do content.opf
+                XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDocument.NameTable);
+                nsManager.AddNamespace("dc", METADATA_XML_NAMESPACE);
+                nsManager.AddNamespace("opf", METADATA_PROPERTY_XML_NAMESPACE);
 
-                var generator = "";
-                var cover = "";
+                var title = "";
+                var creator = "";
                 var subject = "";
+                var description = "";
+                var publisher = "";
                 var date = "";
                 var source = "";
-                var relation = "";
-                var coverate = "";
                 var rights = "";
-                var language = "";
+                string[] language = new string[] { };
+                var identifier = "";
 
-                var title = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "title").FirstOrDefault()?.Value;
-                var creator = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "creator").FirstOrDefault()?.Value;
-                var publisher = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "publisher").FirstOrDefault()?.Value;
-                var description = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "description").FirstOrDefault()?.Value;
+                title = xmlDocument.SelectSingleNode("//dc:title", nsManager)?.InnerText;
+                creator = xmlDocument.SelectSingleNode("//dc:creator", nsManager)?.InnerText;
+                subject = xmlDocument.SelectSingleNode("//dc:subject", nsManager)?.InnerText;
+                description = xmlDocument.SelectSingleNode("//dc:description", nsManager)?.InnerText;
+                publisher = xmlDocument.SelectSingleNode("//dc:publisher", nsManager)?.InnerText;
+                source = xmlDocument.SelectSingleNode("//dc:source", nsManager)?.InnerText;
+                rights = xmlDocument.SelectSingleNode("//dc:rights", nsManager)?.InnerText;
+                identifier = xmlDocument.SelectSingleNode("//dc:identifier", nsManager)?.InnerText;
 
-                //var date = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "date").FirstOrDefault()?.Value;
-                var identifier = xmlDocument.Descendants(METADATA_XML_NAMESPACE + "identifier")
-                                        .Where(e => e.Attribute(METADATA_PROPERTY_XML_NAMESPACE + "scheme")?.Value == "AMAZON")
-                                        .FirstOrDefault()?.Value;
+                //Faz a leitura da tag dc:language
+                int i = 0;
+                foreach (XmlNode __language in xmlDocument.SelectNodes("//dc:language", nsManager))
+                {
+                    language[i] = __language?.InnerXml;
+                    i++;
+                }
+
 
                 //return new MetadataDocument(generator, cover, title, creator, subject, description, publisher, date, source, relation, coverate, rights, language);
 

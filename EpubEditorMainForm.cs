@@ -32,7 +32,50 @@ namespace Epub_Editor
 
         public EpubEditorMainForm()
         {
+
             InitializeComponent();
+            InitVars();
+
+        }
+
+        public EpubEditorMainForm(string[] args)
+        {
+
+            for (int i = 0; i < args.Length; i++) {
+
+                if (args[i].StartsWith("-o")) //open
+                {
+
+                    string file = args[i+1];
+
+                    if (File.Exists(file))
+                    {
+
+                        InitializeComponent();
+                        InitVars();
+                        ProcessEpubFile(file);
+
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("Erro, especifique um arquivo válido existente");
+                        MessageBox.Show("Erro, especifique um arquivo válido existente", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Process.GetCurrentProcess().Kill();
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+        private void InitVars()
+        {
+            AppMainConfig = new MainConfig();
+            AppMainConfig.ReadEpubEditorConfigFile(config_main_path);
         }
 
         private void OpenHtmlFileInTab(XhtmlFile xhtmlFile, TreeNode node, TabControl tabControl)
@@ -644,8 +687,6 @@ namespace Epub_Editor
 
         private void EpubEditorMainForm_Load(object sender, EventArgs e)
         {
-            AppMainConfig = new MainConfig();
-            AppMainConfig.ReadEpubEditorConfigFile(config_main_path);
 
         }
 

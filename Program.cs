@@ -12,12 +12,16 @@ namespace Epub_Editor
         /// Ponto de entrada principal para o aplicativo.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EpubEditorMainForm());
-            //Application.Run(new FormCleanHtml());
+
+            if (args.Length > 0)
+                Application.Run(new EpubEditorMainForm(args));
+            else
+                Application.Run(new EpubEditorMainForm());
+
         }
     }
 }

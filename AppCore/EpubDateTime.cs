@@ -9,42 +9,59 @@ namespace Epub_Editor.AppCore
     public class EpubDateTime
     {
 
-        private DateTime _date;
-        private DateTime _createdDate;
-        private DateTime _publishedDate;
-        private DateTime _modifiedDate;
+        private DateTime __date;
+        private DateEvent __dateEvent;
 
         public EpubDateTime() { }
 
-        public EpubDateTime(DateTime date)
+        public EpubDateTime(DateTime date, DateEvent dateEvent)
         {
             Date = date;
+            DateEvent = dateEvent;
         }
 
-        public EpubDateTime(DateTime date, DateTime createdDate)
+        public override string ToString()
         {
-            Date = date;
-            CreatedDate = createdDate;
+            return Date.ToString();
         }
 
-        public EpubDateTime(DateTime date, DateTime createdDate, DateTime publishedDate)
+        public static string ConvertDateEventToText(DateEvent dateEvent)
         {
-            Date = date;
-            CreatedDate = createdDate;
-            PublishedDate = publishedDate;
+            switch (dateEvent)
+            {
+                case DateEvent.None:
+                    return "";
+                case DateEvent.Creation:
+                    return "creation";
+                case DateEvent.Modification:
+                    return "modification";
+                case DateEvent.Publication:
+                    return "publication";
+            }
+            return null;
         }
 
-        public EpubDateTime(DateTime date, DateTime createdDate, DateTime publishedDate, DateTime modifiedDate)
+        public static DateEvent ConverStringToDateEvent(string input)
         {
-            Date = date;
-            CreatedDate = createdDate;
-            PublishedDate = publishedDate;
-            ModifiedDate = modifiedDate;
+            if (input != null)
+            {
+                switch (input)
+                {
+                    case "":
+                        return DateEvent.None;
+                    case "creation":
+                        return DateEvent.Creation;
+                    case "modification":
+                        return DateEvent.Modification;
+                    case "publication":
+                        return DateEvent.Publication;
+                }
+            }
+
+            return DateEvent.None;
         }
 
-        public DateTime Date { get => _date; set => _date = value; }
-        public DateTime CreatedDate { get => _createdDate; set => _createdDate = value; }
-        public DateTime PublishedDate { get => _publishedDate; set => _publishedDate = value; }
-        public DateTime ModifiedDate { get => _modifiedDate; set => _modifiedDate = value; }
+        public DateTime Date { get => __date; set => __date = value; }
+        public DateEvent DateEvent { get => __dateEvent; set => __dateEvent = value; }
     }
 }

@@ -12,6 +12,8 @@ namespace Epub_Editor.AppCore
         private string _identifiernumber;
         private IdentifierScheme _scheme;
 
+        public Identifier() { }
+
         public Identifier(string identifiernumber, IdentifierScheme scheme)
         {
             IdentifierNumber = identifiernumber;

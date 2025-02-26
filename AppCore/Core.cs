@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Runtime.InteropServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Security.Cryptography;
 using HtmlAgilityPack;
@@ -18,18 +20,101 @@ using System.Xml;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
+using System.Xml.Serialization.Configuration;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Epub_Editor.AppCore
 {
     public static class Core
     {
 
-        //private static EpubFile epubFile;
-        public const string TEMP_PATH_FOLDER = "\\temp\\";
-        public const string METADATA_XML_NAMESPACE = "http://purl.org/dc/elements/1.1/";
+        public const string APP_MAIN_CONFIG_FOLDER = "editor\\settings\\mainconfig.xml";
+        public const string TEMP_PATH_FOLDER                = "\\temp\\";
+        public const string METADATA_XML_NAMESPACE          = "http://purl.org/dc/elements/1.1/";
         public const string METADATA_PROPERTY_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
-        public const string DEFAULT_XML_NAMESPACE = "http://www.idpf.org/2007/opf";
-        public const string CONTENT_OPF_FILENAME = "content.opf";
+        public const string DEFAULT_XML_NAMESPACE           = "http://www.idpf.org/2007/opf";
+        public const string CONTENT_OPF_FILENAME            = "content.opf";
+        public const string EPUB_XHTML_TEMP_PATH            = "temp\\epub\\";
+        public const string EN_US_LANG = "en-US";
+        public const string EN_GB_LANG = "en-GB";
+        public const string EN_AU_LANG = "en-AU";
+        public const string EN_CA_LANG = "en-CA";
+        public const string EN_IN_LANG = "en-IN";
+        public const string ES_ES_LANG = "es-ES";
+        public const string ES_MX_LANG = "es-MX";
+        public const string ES_AR_LANG = "es-AR";
+        public const string ES_CO_LANG = "es-CO";
+        public const string ES_US_LANG = "es-US";
+        public const string FR_FR_LANG = "fr-FR";
+        public const string FR_CA_LANG = "fr-CA";
+        public const string FR_BE_LANG = "fr-BE";
+        public const string PT_PT_LANG = "pt-PT";
+        public const string PT_BR_LANG = "pt-BR";
+        public const string DE_DE_LANG = "de-DE";
+        public const string DE_AT_LANG = "de-AT";
+        public const string DE_CH_LANG = "de-CH";
+        public const string ZH_CN_LANG = "zh-CN";
+        public const string ZH_TW_LANG = "zh-TW";
+        public const string ZH_HK_LANG = "zh-HK";
+        public const string JA_JP_LANG = "ja-JP";
+        public const string KO_KR_LANG = "ko-KR";
+        public const string RU_RU_LANG = "ru-RU";
+        public const string IT_IT_LANG = "it-IT";
+        public const string AR_SA_LANG = "ar-SA";
+        public const string AR_AE_LANG = "ar-AE";
+        public const string HI_IN_LANG = "hi-IN";
+        public const string NL_NL_LANG = "nl-NL";
+        public const string SV_SE_LANG = "sv-SE";
+        public const string DA_DK_LANG = "da-DK";
+        public const string NO_NO_LANG = "no-NO";
+        public const string FI_FI_LANG = "fi-FI";
+        public const string TR_TR_LANG = "tr-TR";
+        public const string PL_PL_LANG = "pl-PL";
+        public const string HE_IL_LANG = "he-IL";
+        public const string TH_TH_LANG = "th-TH";
+        public const string IDENTIFIER_SCHEME_AMAZON_CODE   = "AMAZON";
+        public const string IDENTIFIER_SCHEME_DOI_CODE      = "DOI";
+        public const string IDENTIFIER_SCHEME_ISBN_CODE     = "ISBN";
+        public const string IDENTIFIER_SCHEME_ISSN_CODE     = "ISSN";
+        public const string IDENTIFIER_SCHEME_UUID_CODE     = "UUID";
+        public const string IDENTIFIER_SCHEME_BOOKID_CODE   = "bookid";
+        public const string GUIDE_REFERENCE_ACKNOWLEDGEMENTS        = "acknowledgements";
+        public const string GUIDE_REFERENCE_OTHER_APPENDIX          = "other.appendix";
+        public const string GUIDE_REFERENCE_COVER                   = "cover";
+        public const string GUIDE_REFERENCE_COLOPHON                = "colophon";
+        public const string GUIDE_REFERENCE_OTHER_CONCLUSION        = "other.conclusion";
+        public const string GUIDE_REFERENCE_OTHER_CONTRIBUITORS     = "other.contribuitors";
+        public const string GUIDE_REFERENCE_DEDICATION              = "dedication";
+        public const string GUIDE_REFERENCE_EPIGRAPH                = "epigraph";
+        public const string GUIDE_REFERENCE_OTHER_EPILOGUE          = "other.epilogue";
+        public const string GUIDE_REFERENCE_OTHER_ERRATA            = "other.errata";
+        public const string GUIDE_REFERENCE_OTHER_IMPRINT           = "other.imprint";
+        public const string GUIDE_REFERENCE_GLOSSARY                = "glossary";
+        public const string GUIDE_REFERENCE_INDEX                   = "index";
+        public const string GUIDE_REFERENCE_OTHER_INTRODUCTION      = "other.introduction";
+        public const string GUIDE_REFERENCE_OTHER_LOA               = "other.loa";
+        public const string GUIDE_REFERENCE_OTHER_LOV               = "other.lov";
+        public const string GUIDE_REFERENCE_LOI                     = "loi";
+        public const string GUIDE_REFERENCE_LOT                     = "lot";
+        public const string GUIDE_REFERENCE_OTHER_BACKMATTER        = "other.backmatter";
+        public const string GUIDE_REFERENCE_NOTES                   = "notes";
+        public const string GUIDE_REFERENCE_OTHER_REARNOTES         = "other.rearnotes";
+        public const string GUIDE_REFERENCE_OTHER_FOOTNOTES         = "other.footnotes";
+        public const string GUIDE_REFERENCE_OTHER_CREDITS           = "other.other-credits";
+        public const string GUIDE_REFERENCE_COPYRIGHT_PAGE          = "copyright-page";
+        public const string GUIDE_REFERENCE_OTHER_HALFTITLEPAGE     = "other.halftitlepage";
+        public const string GUIDE_REFERENCE_TITLE_PAGE              = "title-page";
+        public const string GUIDE_REFERENCE_OTHER_FRONTMATTER       = "other.frontmatter";
+        public const string GUIDE_REFERENCE_OTHER_IMPRIMATUR        = "other.imprimatur";
+        public const string GUIDE_REFERENCE_OTHER_AFTERWORD         = "other.afterword";
+        public const string GUIDE_REFERENCE_OTHER_PREAMBLE          = "other.preamble";
+        public const string GUIDE_REFERENCE_FOREWORD                = "foreword";
+        public const string GUIDE_REFERENCE_PREFACE                 = "preface";
+        public const string GUIDE_REFERENCE_OTHER_PROLOGUE          = "other.prologue";
+        public const string GUIDE_REFERENCE_TOC                     = "toc";
+        public const string GUIDE_REFERENCE_TEXT                    = "text";
+
 
         public static string CreateTempDirectory(string tempDirectory)
         {
@@ -175,11 +260,11 @@ namespace Epub_Editor.AppCore
                             {
                                 if (item.HasEdited == true)
                                 {
-                                    SaveHtmlFile(item.XhtmlContends, item.FileTempPath);
+                                    SaveHtmlFile(item.XhtmlContends, Path.Combine(epub.FileName , item.FileTempPath));
                                 }
                             }
 
-                        ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
+                        //ZipFile.CreateFromDirectory(epub.TempPath, string.Format("{0}{1}", Path.GetDirectoryName(epub.OriginalPath), sfd.FileName), CompressionLevel.Optimal, false);
 
                         return true;
                     }
@@ -407,17 +492,33 @@ namespace Epub_Editor.AppCore
 
         public static void SaveHtmlFile(string contend, string path)
         {
-            if (!Directory.Exists(path))
+            string __path = Path.Combine(Path.Combine(AppContext.BaseDirectory, EPUB_XHTML_TEMP_PATH), path.Replace("/", "\\"));
+            if (!Directory.Exists(__path))
             {
                 try
                 {
-                    File.WriteAllText(path, contend);
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(__path));
+
                 }
                 catch (Exception)
                 {
                     throw new Exception();
                 }
             }
+
+            try
+            {
+
+                File.WriteAllText(__path, contend);
+
+            }
+            catch (Exception)
+            {
+
+                throw new Exception();
+            }
+
         }
 
         public static string GetTempPath()
@@ -672,7 +773,18 @@ namespace Epub_Editor.AppCore
             if (paragraphs == null)
                 return document.DocumentNode.OuterHtml;
 
-            string[] topicos = { "topico", "topicos", "topico-abc", "topicos-abc", "topico-num", "topicos-num", "topico-abc-vazio", "topicos-abc-vazio", "topico-rom", "topicos-rom" };
+            string[] topicos = { 
+                "topico",
+                "topicos",
+                "topico-abc",
+                "topicos-abc",
+                "topico-num",
+                "topicos-num",
+                "topico-abc-vazio",
+                "topicos-abc-vazio",
+                "topico-rom",
+                "topicos-rom" 
+            };
             bool insideCitationBlock = false;
             HtmlNode brBefore = null;
 
@@ -983,7 +1095,13 @@ namespace Epub_Editor.AppCore
         public static EpubFile ReadEpubDocument(string filePath)
         {
             List<XhtmlFile> xhtmlFiles = new List<XhtmlFile>();
-            MetadataDocument metadata = new MetadataDocument();
+            List<EpubStyle> styleList = new List<EpubStyle>();
+            List<EpubFont> fontList = new List<EpubFont>();
+            List<EpubImage> images = new List<EpubImage>();
+            List<MiscSettings> miscSettings = new List<MiscSettings>();
+            List<TocSettings> tocSettings = new List<TocSettings>();
+            Content contentDocument = new Content();
+
 
             if (File.Exists(filePath))
             {
@@ -1012,38 +1130,433 @@ namespace Epub_Editor.AppCore
                             }
                         }
 
+                        //Faz a leitura dos arquivos styles.css
+                        if (Path.GetExtension(entry.FullName).Equals(".css", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                styleList.Add(new EpubStyle { 
+                                    CssFileName = entry.Name,
+                                    FilePath = entry.FullName,
+                                    CssFileContent = reader.ReadToEnd(),
+                                    HasEdited = false,
+                                    FileTempPath = entry.FullName,
+                                    OriginalFileHash = GetMd5Hash(reader.ReadToEnd())
+                                });
+
+                            }
+                        }
+
+                        //Faz a leitura dos arquivos font.ttf / font.otf
+                        //.ttf
+                        if (Path.GetExtension(entry.FullName).Equals(".ttf", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                fontList.Add(new EpubFont
+                                {
+                                    FilePath = entry.FullName,
+                                    FontFileName = entry.Name,
+                                    EpubFontType = EpubFontType.TrueTypeFont,
+                                    HasEdited = false,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                });
+
+                            }
+
+                        }
+
+                        //.otf
+                        if (Path.GetExtension(entry.FullName).Equals(".otf", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                fontList.Add(new EpubFont
+                                {
+                                    FilePath = entry.FullName,
+                                    FontFileName = entry.Name,
+                                    EpubFontType = EpubFontType.OpenTypeFont,
+                                    HasEdited = false,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                });
+
+                            }
+
+                        }
+
+                        //Faz a leitura das imagens
+                        //.png
+                        if (Path.GetExtension(entry.FullName).Equals(".png", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                images.Add(new EpubImage
+                                {
+                                    FilePath = entry.FullName,
+                                    HasEdited = false,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                    FileName = entry.Name,
+                                    Imagecontent = Image.FromStream(entry.Open()),
+                                });
+
+                            }
+
+                        }
+
+                        //Faz a leitura das imagens
+                        //.jpg
+                        if (Path.GetExtension(entry.FullName).Equals(".jpg", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                images.Add(new EpubImage
+                                {
+                                    FilePath = entry.FullName,
+                                    HasEdited = false,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                    FileName = entry.Name,
+                                    Imagecontent = Image.FromStream(entry.Open()),
+                                });
+
+                            }
+
+                        }
+
+                        //faz a leitura dos arquivos dentro da pasta /misc
+                        string teste = Path.GetDirectoryName(entry.FullName);
+                        if (Path.GetDirectoryName(entry.FullName).Equals("META-INF", StringComparison.OrdinalIgnoreCase))
+                        {
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                miscSettings.Add(new MiscSettings()
+                                {
+                                    MiscFileName = entry.Name,
+                                    FileContent = reader.ReadToEnd(),
+                                    FilePath = entry.FullName,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                    HasEdited = false
+                                });
+
+                            }
+                        }
+
+                        //faz a leitura do arquivo toc.ncx
+                        if (Path.GetExtension(entry.FullName).Equals(".ncx", StringComparison.OrdinalIgnoreCase))
+                        {
+
+                            using (StreamReader reader = new StreamReader(entry.Open()))
+                            {
+
+                                tocSettings.Add(new TocSettings
+                                {
+                                    FilePath = entry.FullName,
+                                    HasEdited = false,
+                                    OriginalHash = GetMd5Hash(reader.ReadToEnd()),
+                                    TempFilePath = entry.FullName,
+                                    FileName = entry.Name,
+                                    FileContent= reader.ReadToEnd()
+                                });
+
+                            }
+
+                        }
+
                         //faz a leitura do content.opf
-                        if(Path.GetExtension(entry.FullName).Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                        if (Path.GetExtension(entry.FullName).Equals(".opf", StringComparison.OrdinalIgnoreCase))
                         {
                             using (StreamReader reader = new StreamReader(entry.Open()))
                             {
 
                                 string content = reader.ReadToEnd();
-                                metadata = ReadMetadataFromXml(LoadContentOPFXml(content));
+                                contentDocument = ReadContentDocumentFromXml(entry.Name, entry.FullName, entry.FullName, content);
 
                             }
                         }
-                    }
-                }
 
-                return new EpubFile
-                {
-                    FileName = Path.GetFileName(filePath),
-                    TempPath = "\\OEBPS\\",
-                    OriginalPath = filePath,
-                    XhtmlFiles = xhtmlFiles.ToArray(),
-                    HasEdited = false,
-                    Metadata = metadata
-                };
+                    }
+
+                    return new EpubFile
+                    {
+                        FileName = Path.GetFileName(filePath),
+                        TempPath = "\\OEBPS\\",
+                        OriginalPath = filePath,
+                        XhtmlFiles = xhtmlFiles.ToArray(),
+                        HasEdited = false,
+                        Styles = styleList.ToArray(),
+                        Fonts = fontList.ToArray(),
+                        Images = images.ToArray(),
+                        MiscSettings = miscSettings.ToArray(),
+                        TocSettings = tocSettings.ToArray(),
+                        Content = contentDocument
+                    };
+
+                }
 
             }
 
             return null;
         }
 
+        public static Content ReadContentDocumentFromXml(string contentFileName, string filePath, string tempFilePath, string content)
+        {
+            if(content != null)
+            {
+                string enconding;
+                string version;
+                string unique_identifier;
+                MetadataDocument metadata;
+                Manifest manifest;
+                Spine spine;
+                Guide guide;
+
+                XmlDocument xdoc = new XmlDocument();
+                xdoc.LoadXml(content);
+
+                XmlNamespaceManager nsManager = new XmlNamespaceManager(xdoc.NameTable);
+                nsManager.AddNamespace("dc", METADATA_XML_NAMESPACE);
+                nsManager.AddNamespace("opf", METADATA_PROPERTY_XML_NAMESPACE);
+
+                Match m = Regex.Match(content, @"encoding=[""'](.+?)[""']");
+                if (m.Success)
+                    enconding = m.Groups[1].Value;
+                else
+                    enconding = "error";
+
+                version = xdoc.DocumentElement.GetAttribute("version");
+                unique_identifier = xdoc.DocumentElement.GetAttribute("unique-identifier");
+                metadata = ReadMetadataFromXml(xdoc);
+                manifest = ReadManifestFromXml(xdoc);
+                spine = ReadSpineFromXml(xdoc);
+                guide = ReadGuideFromXml(xdoc);
+                                
+                Package package = new Package {
+                    Version = version,
+                    XmlNamespace = METADATA_XML_NAMESPACE,
+                    XmlOpfNamespace = METADATA_PROPERTY_XML_NAMESPACE,
+                    Guide = guide,
+                    Manifest = manifest,
+                    Spine = spine,
+                    Metadata = metadata,
+                    UniqueIdentifier = unique_identifier
+                };
+
+                Content _content = new Content
+                {
+                    FileName = contentFileName,
+                    FilePath = filePath,
+                    Enconding = enconding,
+                    HasEdited = false,
+                    OriginalHash = GetMd5Hash(content),
+                    TempFilePath = tempFilePath,
+                    Package = package
+                };
+
+                return _content;
+
+            }
+
+            return null ;
+        }
+
         public static void PopulateTreeView(System.Windows.Forms.TreeView treeView, EpubFile epubFile)
         {
             treeView.Nodes.Clear();
+
+            ImageList icons = new ImageList();
+            icons.Images.Add("folder", Properties.Resources.pasta);
+            icons.Images.Add("file", Properties.Resources.html);
+            icons.Images.Add("img", Properties.Resources.imagem);
+            icons.Images.Add("css", Properties.Resources.css);
+            icons.Images.Add("fonte", Properties.Resources.fonte);
+            icons.Images.Add("misc", Properties.Resources.ferramentas);
+            icons.Images.Add("data", Properties.Resources.arquivo);
+
+            treeView.ImageList = icons;
+
+            // Cria o nó raiz
+            TreeNode rootNode = new TreeNode($"EBOOK ({epubFile.FileName})")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "OEBPS"
+            TreeNode oebpsNode = new TreeNode("OEBPS")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "Text"
+            TreeNode textNode = new TreeNode("Text")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "Styles"
+            TreeNode stylesNode = new TreeNode("Styles")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "Images"
+            TreeNode imagesNode = new TreeNode("Images")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "Images"
+            TreeNode fontsNode = new TreeNode("Fonts")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            // Cria o nó "Images"
+            TreeNode miscNode = new TreeNode("Misc")
+            {
+                ImageKey = "folder",
+                SelectedImageKey = "folder"
+            };
+
+            //faz a leitura dos arquivos .html
+            foreach (var xhtmlFile in epubFile.XhtmlFiles)
+            {
+                TreeNode xhtmlFileNode = new TreeNode(xhtmlFile.FileName)
+                {
+                    ImageKey = "file",
+                    SelectedImageKey= "file",
+                    Tag = xhtmlFile
+                };
+
+                textNode.Nodes.Add(xhtmlFileNode);
+
+            }
+
+            //faz a leitura dos arquivos .css
+            foreach (var cssFile in epubFile.Styles)
+            {
+                TreeNode cssFileNode = new TreeNode(cssFile.CssFileName)
+                {
+                    ImageKey = "css",
+                    SelectedImageKey = "css",
+                    Tag = cssFile
+                };
+
+                stylesNode.Nodes.Add(cssFileNode);
+
+            }
+
+            //faz a leitura dos arquivos de imagem
+            foreach (var imgFile in epubFile.Images)
+            {
+                TreeNode imgFileNode = new TreeNode(imgFile.FileName)
+                {
+                    ImageKey = "img",
+                    SelectedImageKey = "img",
+                    Tag = imgFile
+                };
+
+                imagesNode.Nodes.Add(imgFileNode);
+
+            }
+
+            //faz a leitura dos arquivos de fontes
+            foreach (var fontFile in epubFile.Fonts)
+            {
+                TreeNode fontFileNode = new TreeNode(fontFile.FontFileName)
+                {
+                    ImageKey = "fonte",
+                    SelectedImageKey = "fonte",
+                    Tag = fontFile
+                };
+
+                fontsNode.Nodes.Add(fontFileNode);
+
+            }
+
+            //faz a leitura dos arquivos de fontes
+            foreach (var miscFile in epubFile.MiscSettings)
+            {
+                TreeNode miscFileNode = new TreeNode(miscFile.MiscFileName)
+                {
+                    ImageKey = "misc",
+                    SelectedImageKey = "misc",
+                    Tag = miscFile
+                };
+
+                miscNode.Nodes.Add(miscFileNode);
+
+            }
+
+            //Adiciona arquivo .ncx no OEBPS raiz
+            if (epubFile.TocSettings != null)
+            {
+                foreach (var tocFile in epubFile.TocSettings)
+                {
+                    TreeNode tocFileNode = new TreeNode(tocFile.FileName)
+                    {
+                        ImageKey = "data",
+                        SelectedImageKey = "data",
+                        Tag = tocFile
+                    };
+
+                    oebpsNode.Nodes.Add(tocFileNode);
+
+                }
+
+            }
+
+            //Adiciona arquivo .opf no OEBPS raiz
+            if (epubFile.Content != null)
+            {
+
+                TreeNode opfFileNode = new TreeNode(epubFile.Content.FileName)
+                {
+                    ImageKey = "data",
+                    SelectedImageKey = "data",
+                    Tag = epubFile.Content
+                };
+
+                oebpsNode.Nodes.Add(opfFileNode);
+
+            }
+
+            //Adiciona arquivo .opf no OEBPS raiz
+            //var opfFile = epubFile.Metadata.
+
+
+            oebpsNode.Nodes.Add(textNode);
+            oebpsNode.Nodes.Add(stylesNode);
+            oebpsNode.Nodes.Add(imagesNode);
+            oebpsNode.Nodes.Add(fontsNode);
+            oebpsNode.Nodes.Add(miscNode);
+            rootNode.Nodes.Add(oebpsNode);
+
+            textNode.Expand();
+            oebpsNode.Expand();
+            rootNode.Expand();
+            treeView.Nodes.Add(rootNode);
+
+            /*
 
             ImageList icons = new ImageList();
             icons.Images.Add("folder", Properties.Resources.pasta);
@@ -1067,6 +1580,7 @@ namespace Epub_Editor.AppCore
 
             rootNode.Nodes.Add(oebpsNode);
 
+            //Adiciona as pastas .xhtml
             foreach (var xhtmlFile in epubFile.XhtmlFiles.Where(f => f.FileTempPath.Contains("OEBPS")))
             {
                 TreeNode fileNode = new TreeNode(xhtmlFile.FileName)
@@ -1081,7 +1595,7 @@ namespace Epub_Editor.AppCore
 
             rootNode.Expand();
             treeView.Nodes.Add(rootNode);
-
+            */
         }
 
         private static string CalculateHash(string input)
@@ -1117,35 +1631,389 @@ namespace Epub_Editor.AppCore
                 var subject = "";
                 var description = "";
                 var publisher = "";
-                var date = "";
+                var relation = "";
+                var coverage = "";
                 var source = "";
                 var rights = "";
-                string[] language = new string[] { };
                 var identifier = "";
+                List<EpubDateTime> epubDateTime = new List<EpubDateTime>();
+                List<Language> languages = new List<Language>();
+                List<Identifier> identifiers = new List<Identifier>();
+                List<Meta> metas = new List<Meta>();
+
 
                 title = xmlDocument.SelectSingleNode("//dc:title", nsManager)?.InnerText;
                 creator = xmlDocument.SelectSingleNode("//dc:creator", nsManager)?.InnerText;
                 subject = xmlDocument.SelectSingleNode("//dc:subject", nsManager)?.InnerText;
                 description = xmlDocument.SelectSingleNode("//dc:description", nsManager)?.InnerText;
                 publisher = xmlDocument.SelectSingleNode("//dc:publisher", nsManager)?.InnerText;
+                relation = xmlDocument.SelectSingleNode("//dc:relation", nsManager)?.InnerText;
+                coverage = xmlDocument.SelectSingleNode("//dc:coverage", nsManager)?.InnerText;
                 source = xmlDocument.SelectSingleNode("//dc:source", nsManager)?.InnerText;
                 rights = xmlDocument.SelectSingleNode("//dc:rights", nsManager)?.InnerText;
                 identifier = xmlDocument.SelectSingleNode("//dc:identifier", nsManager)?.InnerText;
 
-                //Faz a leitura da tag dc:language
-                int i = 0;
-                foreach (XmlNode __language in xmlDocument.SelectNodes("//dc:language", nsManager))
+                //Faz leitura das tags Date
+                XmlNodeList dateNodes = xmlDocument.SelectNodes("//opf:metadata/dc:date", nsManager);
+                foreach(XmlNode node in dateNodes)
                 {
-                    language[i] = __language?.InnerXml;
-                    i++;
+
+                    string dateString = node.InnerText?.Trim();
+                    DateTime parsedDate;
+
+                    if (DateTime.TryParseExact(dateString, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out parsedDate)) { }
+                    else if (DateTime.TryParseExact(dateString, "yyyy", null, System.Globalization.DateTimeStyles.None, out parsedDate)) { }
+                    else
+                        parsedDate = new DateTime(2000, 1, 1);
+                  
+
+                    epubDateTime.Add(new EpubDateTime
+                    {
+
+                        Date = parsedDate,
+                        DateEvent = EpubDateTime.ConverStringToDateEvent(node.Attributes["opf:event"]?.Value ?? string.Empty)
+
+                    });
+
                 }
 
+                //Faz a leitura das tags lang
+                XmlNodeList langNodes = xmlDocument.SelectNodes("//opf:metadata/dc:language", nsManager);
+                foreach (XmlNode node in langNodes)
+                {
+                    languages.Add(ConvertToLanguageEnum(node.InnerText.Trim()));
+                }
 
-                //return new MetadataDocument(generator, cover, title, creator, subject, description, publisher, date, source, relation, coverate, rights, language);
+                //Faz a leitura das tags identifier
+                XmlNodeList identifierNodes = xmlDocument.SelectNodes("//opf:metadata/dc:identifier", nsManager);
+                foreach (XmlNode node in identifierNodes)
+                {
+
+                    if (node.Attributes["id"]?.InnerText == IDENTIFIER_SCHEME_BOOKID_CODE)
+                    {
+                        identifiers.Add(new Identifier
+                        {
+
+                            IdentifierNumber = node.InnerText.Trim(),
+                            Scheme = ConvertIdentifierStringToEnum(node.Attributes["id"]?.Value ?? string.Empty),
+
+                        });
+                    } else
+                    {
+                        identifiers.Add(new Identifier
+                        {
+
+                            IdentifierNumber = node.InnerText.Trim(),
+                            Scheme = ConvertIdentifierStringToEnum(node.Attributes["opf:scheme"]?.Value ?? string.Empty),
+
+                        });
+                    }
+
+
+                }
+
+                //Faz a leitura das tags meta
+                XmlNodeList metaNodes = xmlDocument.ChildNodes[1].SelectNodes("/opf:package/opf:metadata/opf:meta", nsManager);
+
+                foreach (XmlNode node in metaNodes)
+                {
+                  
+                    metas.Add(new Meta
+                    {
+                    
+                        Name = node.Attributes["name"]?.Value ?? "",
+                        Content = node.Attributes["content"]?.Value ?? ""
+                    
+                    });
+
+                }
+
+                return new MetadataDocument(title, creator, subject, description, publisher, epubDateTime.ToArray(), source, relation, coverage, rights, languages.ToArray(), identifiers.ToArray(), metas.ToArray());
 
             }   
 
             return null;
+        }
+
+        public static Manifest ReadManifestFromXml(XmlDocument xmlDocument)
+        {
+
+            if (xmlDocument != null)
+            {
+                XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDocument.NameTable);
+                nsManager.AddNamespace("dc", METADATA_XML_NAMESPACE);
+                nsManager.AddNamespace("opf", METADATA_PROPERTY_XML_NAMESPACE);
+
+                Manifest manifest = new Manifest();
+                
+                XmlNodeList itemManifestNodes = xmlDocument.SelectNodes("/opf:package/opf:manifest/opf:item", nsManager);
+                foreach (XmlNode node in itemManifestNodes)
+                {
+
+                    manifest.Items.Add(new ManifestItem
+                    {
+                        ItemId = node.Attributes["id"]?.Value ?? "",
+                        ItemHref = node.Attributes["href"]?.Value ?? "",
+                        MediaType = node.Attributes["media-type"]?.Value ?? ""
+                    });
+
+                }
+
+                return manifest;
+
+            }
+
+            return null;
+
+        }
+
+        public static Spine ReadSpineFromXml(XmlDocument xmlDocument)
+        {
+            if (xmlDocument != null)
+            {
+                XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDocument.NameTable);
+                nsManager.AddNamespace("dc", METADATA_XML_NAMESPACE);
+                nsManager.AddNamespace("opf", METADATA_PROPERTY_XML_NAMESPACE);
+
+                Spine spine = new Spine();
+
+                XmlNodeList itemSpineNodes = xmlDocument.SelectNodes("/opf:package/opf:spine/opf:itemref", nsManager);
+                foreach (XmlNode node in itemSpineNodes)
+                {
+
+                    spine.Items.Add(new SpineItem
+                    {
+                        ItemRefId = node.Attributes["idref"]?.Value ?? "",
+                        Linear = node.Attributes["linear"]?.Value?.ToLower() != "no" 
+                    });
+
+                }
+
+                return spine;
+
+            }
+
+            return null;
+
+        }
+
+        public static Guide ReadGuideFromXml(XmlDocument xmlDocument)
+        {
+
+            if (xmlDocument != null)
+            {
+                XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDocument.NameTable);
+                nsManager.AddNamespace("dc", METADATA_XML_NAMESPACE);
+                nsManager.AddNamespace("opf", METADATA_PROPERTY_XML_NAMESPACE);
+
+                Guide guide = new Guide();
+
+                XmlNodeList itemGuideNodes = xmlDocument.SelectNodes("/opf:package/opf:guide/opf:reference", nsManager);
+                foreach (XmlNode node in itemGuideNodes)
+                {
+
+                    guide.GuideReferenceItems.Add(new GuideReference
+                    {
+                        GuideReferenceType = ConvertGuideRefTypeStringToEnum(node.Attributes["type"]?.Value ?? ""),
+                        Href = node.Attributes["href"]?.Value ?? "",
+                        Title = node.Attributes["title"]?.Value ?? "",
+                    });
+
+                }
+
+                return guide;
+            }
+
+            return null;
+        }
+
+        public static GuideReferenceType ConvertGuideRefTypeStringToEnum(string input)
+        {
+            if (input != null)
+            {
+                switch (input)
+                {
+                    case GUIDE_REFERENCE_ACKNOWLEDGEMENTS: return GuideReferenceType.ACKNOWLEDGEMENTS;
+                    case GUIDE_REFERENCE_OTHER_APPENDIX: return GuideReferenceType.OTHER_APPENDIX;
+                    case GUIDE_REFERENCE_COVER: return GuideReferenceType.COVER;
+                    case GUIDE_REFERENCE_COLOPHON: return GuideReferenceType.COLOPHON;
+                    case GUIDE_REFERENCE_OTHER_CONCLUSION: return GuideReferenceType.OTHER_CONCLUSION;
+                    case GUIDE_REFERENCE_OTHER_CONTRIBUITORS: return GuideReferenceType.OTHER_CONTRIBUITORS;
+                    case GUIDE_REFERENCE_DEDICATION: return GuideReferenceType.DEDICATION;
+                    case GUIDE_REFERENCE_EPIGRAPH: return GuideReferenceType.EPIGRAPH;
+                    case GUIDE_REFERENCE_OTHER_EPILOGUE: return GuideReferenceType.OTHER_EPILOGUE;
+                    case GUIDE_REFERENCE_OTHER_ERRATA: return GuideReferenceType.OTHER_ERRATA;
+                    case GUIDE_REFERENCE_OTHER_IMPRINT: return GuideReferenceType.OTHER_IMPRINT;
+                    case GUIDE_REFERENCE_GLOSSARY: return GuideReferenceType.GLOSSARY;
+                    case GUIDE_REFERENCE_INDEX: return GuideReferenceType.INDEX;
+                    case GUIDE_REFERENCE_OTHER_INTRODUCTION: return GuideReferenceType.OTHER_INTRODUCTION;
+                    case GUIDE_REFERENCE_OTHER_LOA: return GuideReferenceType.OTHER_LOA;
+                    case GUIDE_REFERENCE_OTHER_LOV: return GuideReferenceType.OTHER_LOV;
+                    case GUIDE_REFERENCE_LOI: return GuideReferenceType.LOI;
+                    case GUIDE_REFERENCE_LOT: return GuideReferenceType.LOT;
+                    case GUIDE_REFERENCE_OTHER_BACKMATTER: return GuideReferenceType.OTHER_BACKMATTER;
+                    case GUIDE_REFERENCE_NOTES: return GuideReferenceType.NOTES;
+                    case GUIDE_REFERENCE_OTHER_REARNOTES: return GuideReferenceType.OTHER_REARNOTES;
+                    case GUIDE_REFERENCE_OTHER_FOOTNOTES: return GuideReferenceType.OTHER_FOOTNOTES;
+                    case GUIDE_REFERENCE_OTHER_CREDITS: return GuideReferenceType.OTHER_CREDITS;
+                    case GUIDE_REFERENCE_COPYRIGHT_PAGE: return GuideReferenceType.COPYRIGHT_PAGE;
+                    case GUIDE_REFERENCE_OTHER_HALFTITLEPAGE: return GuideReferenceType.OTHER_HALFTITLEPAGE;
+                    case GUIDE_REFERENCE_TITLE_PAGE: return GuideReferenceType.TITLE_PAGE;
+                    case GUIDE_REFERENCE_OTHER_FRONTMATTER: return GuideReferenceType.OTHER_FRONTMATTER;
+                    case GUIDE_REFERENCE_OTHER_IMPRIMATUR: return GuideReferenceType.OTHER_IMPRIMATUR;
+                    case GUIDE_REFERENCE_OTHER_AFTERWORD: return GuideReferenceType.OTHER_AFTERWORD;
+                    case GUIDE_REFERENCE_OTHER_PREAMBLE: return GuideReferenceType.OTHER_PREAMBLE;
+                    case GUIDE_REFERENCE_FOREWORD: return GuideReferenceType.FOREWORD;
+                    case GUIDE_REFERENCE_PREFACE: return GuideReferenceType.PREFACE;
+                    case GUIDE_REFERENCE_OTHER_PROLOGUE: return GuideReferenceType.OTHER_PROLOGUE;
+                    case GUIDE_REFERENCE_TOC: return GuideReferenceType.TOC;
+                    case GUIDE_REFERENCE_TEXT: return GuideReferenceType.TEXT;
+                    default: return GuideReferenceType.UNKNOWN;
+                }
+            }
+
+            return GuideReferenceType.UNKNOWN;
+
+        }
+
+        public static IdentifierScheme ConvertIdentifierStringToEnum(string input)
+        {
+            if (input != null)
+            {
+                switch (input)
+                {
+                    case IDENTIFIER_SCHEME_AMAZON_CODE: return IdentifierScheme.AMAZON;
+                    case IDENTIFIER_SCHEME_DOI_CODE: return IdentifierScheme.DOI;
+                    case IDENTIFIER_SCHEME_ISBN_CODE: return IdentifierScheme.ISBN;
+                    case IDENTIFIER_SCHEME_ISSN_CODE: return IdentifierScheme.ISSN;
+                    case IDENTIFIER_SCHEME_UUID_CODE: return IdentifierScheme.UUID;
+                    case IDENTIFIER_SCHEME_BOOKID_CODE: return IdentifierScheme.BOOK_ID;
+                    default: return IdentifierScheme.CUSTOM;
+                }
+            }
+            return IdentifierScheme.CUSTOM;
+        }
+
+        public static Language ConvertToLanguageEnum(string langCode)
+        {
+            switch (langCode)
+            {
+                // English
+                case EN_US_LANG: return Language.EN_US;
+                case EN_GB_LANG: return Language.EN_GB;
+                case EN_AU_LANG: return Language.EN_AU;
+                case EN_CA_LANG: return Language.EN_CA;
+                case EN_IN_LANG: return Language.EN_IN;
+
+                // Spanish
+                case ES_ES_LANG: return Language.ES_ES;
+                case ES_MX_LANG: return Language.ES_MX;
+                case ES_AR_LANG: return Language.ES_AR;
+                case ES_CO_LANG: return Language.ES_CO;
+                case ES_US_LANG: return Language.ES_US;
+
+                // French
+                case FR_FR_LANG: return Language.FR_FR;
+                case FR_CA_LANG: return Language.FR_CA;
+                case FR_BE_LANG: return Language.FR_BE;
+
+                // Portuguese
+                case PT_PT_LANG: return Language.PT_PT;
+                case PT_BR_LANG: return Language.PT_BR;
+
+                // German
+                case DE_DE_LANG: return Language.DE_DE;
+                case DE_AT_LANG: return Language.DE_AT;
+                case DE_CH_LANG: return Language.DE_CH;
+
+                // Chinese
+                case ZH_CN_LANG: return Language.ZH_CN;
+                case ZH_TW_LANG: return Language.ZH_TW;
+                case ZH_HK_LANG: return Language.ZH_HK;
+
+                // Japanese
+                case JA_JP_LANG: return Language.JA_JP;
+
+                // Korean
+                case KO_KR_LANG: return Language.KO_KR;
+
+                // Russian
+                case RU_RU_LANG: return Language.RU_RU;
+
+                // Italian
+                case IT_IT_LANG: return Language.IT_IT;
+
+                // Arabic
+                case AR_SA_LANG: return Language.AR_SA;
+                case AR_AE_LANG: return Language.AR_AE;
+
+                // Hindi
+                case HI_IN_LANG: return Language.HI_IN;
+
+                // Others
+                case NL_NL_LANG: return Language.NL_NL;
+                case SV_SE_LANG: return Language.SV_SE;
+                case DA_DK_LANG: return Language.DA_DK;
+                case NO_NO_LANG: return Language.NO_NO;
+                case FI_FI_LANG: return Language.FI_FI;
+                case TR_TR_LANG: return Language.TR_TR;
+                case PL_PL_LANG: return Language.PL_PL;
+                case HE_IL_LANG: return Language.HE_IL;
+                case TH_TH_LANG: return Language.TH_TH;
+
+                // Valor padrão para não reconhecidos
+                default: return Language.UNKNOWN;
+            }
+        }
+
+        public static int ExportXhtmlArrayDataFilesToFolder(string folder, XhtmlFile[] xhtmlFiles)
+        { 
+        
+            if(Directory.Exists(folder))
+            {
+
+                foreach (XhtmlFile xf in xhtmlFiles)
+                {
+
+                    string fileName = xf.FileName;
+                    if (Path.GetExtension(fileName) == ".xhtml")
+                    {
+                        FileStream fs = new FileStream( $"{folder}\\{fileName}", FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+                        using (StreamWriter sw = new StreamWriter(fs))
+                        {
+                            sw.Write(xf.XhtmlContends);
+                            sw.Close();
+                        }
+
+                        fs.Close();
+                    }
+
+                }
+
+                return 0;
+
+            }
+
+            return -1;
+
+        }
+
+        public static int ExportToNewEpubDocument(EpubFile epub)
+        {
+
+            if (epub != null)
+            {
+                
+                
+                
+                XmlDocument xmlDocument = new XmlDocument();
+                
+
+
+            }
+
+            return -1;
+
         }
     }
 }

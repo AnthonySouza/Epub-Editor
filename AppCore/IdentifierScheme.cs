@@ -10,8 +10,10 @@ namespace Epub_Editor.AppCore
     {
         ISBN    = 0,
         ISSN    = 1,
-        POI     = 2,
+        DOI     = 2,
         AMAZON  = 3,
-        UUID    = 4
+        UUID    = 4,
+        CUSTOM  = 5,
+        BOOK_ID  = 6
     }
 }

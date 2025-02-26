@@ -71,5 +71,7 @@ namespace Epub_Editor.AppCore
         PL_PL = 126, // Polish (Poland)
         HE_IL = 127, // Hebrew (Israel)
         TH_TH = 128, // Thai (Thailand)
+
+        UNKNOWN = 130
     }
 }

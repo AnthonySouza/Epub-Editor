@@ -10,19 +10,25 @@ using Epub_Editor.AppCore;
 using Epub_Editor.Forms.MetadataForms;
 using System.Linq;
 using System.Data;
+using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace Epub_Editor
 {
     public partial class EpubEditorMainForm : Form
     {
 
+        private MainConfig config;
         private ZipArchive epubArchive;
         private EpubFile epubFile;
+        private string config_main_path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Core.APP_MAIN_CONFIG_FOLDER);
 
         //Forms
         MetadataForm metadataForm;
 
         public EpubFile EpubFile { get => epubFile; set => epubFile = value; }
+
+        public MainConfig AppMainConfig { get => config; set => config = value; }
 
         public EpubEditorMainForm()
         {
@@ -65,6 +71,54 @@ namespace Epub_Editor
             textEditor.TextChanged += TextEditor_TextChanged;
 
             ConfigureHtmlSyntax(textEditor);
+
+            // Adiciona o RichTextBox à aba
+            newTab.Controls.Add(textEditor);
+
+            // Adiciona a nova aba ao TabControl
+            tabControl.TabPages.Add(newTab);
+
+            // Seleciona a aba recém-criada
+            tabControl.SelectedTab = newTab;
+
+        }
+
+        private void OpenCSSFileInTab(EpubStyle cssFile, TreeNode node, TabControl tabControl)
+        {
+
+            // Lê o conteúdo do arquivo
+            string fileContend = cssFile.CssFileContent;
+
+            foreach (TabPage tab in tabControl.TabPages)
+            {
+                if (tab.Text == cssFile.CssFileName)
+                {
+                    tabControl.SelectedTab = tab;
+                    return;
+                }
+            }
+
+            // Cria uma nova aba no TabControl
+            TabPage newTab = new TabPage(cssFile.CssFileName);
+
+
+            AdvancedTextBox textEditor = new AdvancedTextBox
+            {
+                Dock = DockStyle.Fill,
+                Text = fileContend,
+                Font = new Font("Cascadia Mono", 10),
+                WhitespaceBackColor = Color.White,
+                WrapMode = WrapMode.None,
+                IndentationGuides = IndentView.LookBoth,
+                SelectionBackColor = Core.IntToColor(0xCFCFCF),
+                LexerLanguage = "css",
+                HasEdited = false,
+                Hash = Core.GetMd5Hash(fileContend)
+            };
+
+            textEditor.TextChanged += TextEditor_TextChanged;
+
+            ConfigureCssSyntax(textEditor);
 
             // Adiciona o RichTextBox à aba
             newTab.Controls.Add(textEditor);
@@ -211,6 +265,33 @@ namespace Epub_Editor
             scintilla.IndentationGuides = IndentView.LookForward; // Exibe guias de indentação
         }
 
+        private void ConfigureCssSyntax(Scintilla scintilla)
+        {
+            // Define cores e estilos
+            scintilla.StyleResetDefault();
+            scintilla.Styles[Style.Default].Font = "Consolas";
+            scintilla.Styles[Style.Default].Size = 10;
+            scintilla.StyleClearAll();
+
+            // Configuração para HTML
+            scintilla.Styles[Style.Css.Default].ForeColor = System.Drawing.Color.Black;
+            scintilla.Styles[Style.Css.Tag].ForeColor = System.Drawing.Color.SaddleBrown;
+            scintilla.Styles[Style.Css.Class].ForeColor = System.Drawing.Color.FromArgb(128, 0, 0);
+            scintilla.Styles[Style.Css.PseudoClass].ForeColor = System.Drawing.Color.Black;
+            scintilla.Styles[Style.Css.Identifier].ForeColor = System.Drawing.Color.BlueViolet;
+            scintilla.Styles[Style.Css.Attribute].ForeColor = System.Drawing.Color.SaddleBrown;
+            scintilla.Styles[Style.Css.Value].ForeColor = System.Drawing.Color.FromArgb(90, 90, 90);
+
+            scintilla.SetKeywords(0, "@font-face");
+
+            scintilla.LexerLanguage = "css";
+            scintilla.LexerName = "css";
+
+            // Outras configurações
+            scintilla.Margins[0].Width = 40; // Margem para números de linha
+            scintilla.IndentationGuides = IndentView.LookForward; // Exibe guias de indentação
+        }
+
 
         private bool NodeNameExists(TreeNode parentNode, string nodeName)
         {
@@ -228,22 +309,25 @@ namespace Epub_Editor
         {
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string filePath = openFileDialog.FileName;
-                //string directoryPath = Path.GetDirectoryName(filePath);
 
+                string filePath = openFileDialog.FileName;
                 ProcessEpubFile(filePath);
+                
 
             }
         }
 
         public void ProcessEpubFile(string filePath)
         {
-            //EpubFile = Core.ExportEpubFileToTempDirectory(filePath);
-
-            //Core.ListEpubFiles(EpubFile.TempPath, epubTreeView, treeViewMenuStrip);
 
             EpubFile = Core.ReadEpubDocument(filePath);
             Core.PopulateTreeView(epubTreeView, EpubFile);
+            
+            RecentEpubFile recent = new RecentEpubFile(EpubFile.Content.Package.Metadata?.Title, EpubFile.OriginalPath, DateTime.Now, true);
+            AppMainConfig.WriteEpubRecentOpennedFileOnConfig(config_main_path, recent);
+            
+
+            Text = $"Epub Editor ({EpubFile.Content.Package.Metadata?.Title}, {EpubFile.Content.Package.Metadata?.Creator})";
 
         }
 
@@ -349,6 +433,16 @@ namespace Epub_Editor
                 // Chama a função para abrir o HTML no TabControl
                 var treeViewTag = e.Node.Tag as XhtmlFile;
                 OpenHtmlFileInTab((XhtmlFile)treeViewTag, e.Node, tabControl);
+            }
+
+            if (e.Node.Text != null && e.Node.Text.ToString().EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                string filePath = e.Node.FullPath; // Caminho completo do arquivo
+
+
+                // Chama a função para abrir o HTML no TabControl
+                var treeViewTag = e.Node.Tag as EpubStyle;
+                OpenCSSFileInTab((EpubStyle)treeViewTag, e.Node, tabControl);
             }
 
         }
@@ -531,7 +625,7 @@ namespace Epub_Editor
         {
 
             //Verifica se os dados de Metadados estão preenchidos, caso contrário, cria uma nova base de matadados para o ebook
-            if (epubFile != null && epubFile.Metadata != null)
+            if (epubFile != null && epubFile.Content.Package.Metadata != null)
             {
 
                 metadataForm = new MetadataForm();
@@ -543,6 +637,132 @@ namespace Epub_Editor
                 //criar novo metadado
 
             }
+
+        }
+
+        public event Action<RecentEpubFile> OpenRecentEpubItemEvent;
+
+        private void EpubEditorMainForm_Load(object sender, EventArgs e)
+        {
+            AppMainConfig = new MainConfig();
+            AppMainConfig.ReadEpubEditorConfigFile(config_main_path);
+
+        }
+
+        private void sairToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void epubDocumentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void xhtmlFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            if (fbd.ShowDialog(this) == DialogResult.OK)
+            {
+                string folder = fbd.SelectedPath;
+                if (Core.ExportXhtmlArrayDataFilesToFolder(folder, epubFile.XhtmlFiles) == 0)
+                {
+                    MessageBox.Show($"Arquivos exportados com sucesso!\n\nTotal: {epubFile.XhtmlFiles.Length}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                }
+            }
+
+        }
+
+        private void openRecentToolStripMenuItem_MouseHover(object sender, EventArgs e)
+        {
+            ReadRecentFilesOnMenuStrip();
+        }
+
+        private void ReadRecentFilesOnMenuStrip()
+        {
+
+            if (AppMainConfig.RecentFiles.Count > 0)
+            {
+
+                openRecentToolStripMenuItem.DropDownItems.Clear();
+
+                foreach (var recentFile in AppMainConfig.RecentFiles)
+                {
+
+                    if(recentFile.IsFound)
+                    {
+
+                        EpubEditorToolStripMenuItem __openRecentToolStripMenuItem = new EpubEditorToolStripMenuItem(recentFile);
+                        __openRecentToolStripMenuItem.Click += OpenRecentToolStripMenuItem_Click;
+
+                        openRecentToolStripMenuItem.DropDownItems.Add(__openRecentToolStripMenuItem);
+
+                    } else
+                    {
+
+                        EpubEditorToolStripMenuItem __openRecentToolStripMenuItem = new EpubEditorToolStripMenuItem($"[inexistente] {recentFile.Name}");
+                        __openRecentToolStripMenuItem.Enabled = false;
+
+                        openRecentToolStripMenuItem.DropDownItems.Add(__openRecentToolStripMenuItem);
+
+                    }
+
+                }
+            }
+
+
+        }
+
+        private void OpenRecentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessEpubFile(((EpubEditorToolStripMenuItem)sender).RecentEpubFile.Directory);
+        }
+
+        private void EditorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = ((EpubEditorToolStripMenuItem)sender).ExternEditor?.Directory,
+                Arguments = ((EpubEditorToolStripMenuItem)sender).ExternEditor?.Exec_attributes
+            };
+
+            Process.Start(psi);
+
+        }
+
+        private void LoadExternEditors()
+        {
+            foreach (var editor in AppMainConfig.ExternEditors)
+            {
+
+                EpubEditorToolStripMenuItem __editorsToolStripMenuItem = new EpubEditorToolStripMenuItem(editor);
+                __editorsToolStripMenuItem.Click += EditorsToolStripMenuItem_Click;
+
+                editorsToolStripMenuItem.DropDownItems.Add(__editorsToolStripMenuItem);
+
+            }
+        }
+
+        private void editorsToolStripMenuItem_MouseHover(object sender, EventArgs e)
+        {
+
+            editorsToolStripMenuItem.DropDownItems.Clear();
+            LoadExternEditors();
+
+        }
+
+        private void editorsToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
+            editorsToolStripMenuItem.DropDownItems.Clear();
+            LoadExternEditors();
 
         }
     }

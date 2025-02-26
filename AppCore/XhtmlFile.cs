@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Epub_Editor.AppCore
 {
-    public class XhtmlFile
+
+    public class XhtmlFile : IDisposable
     {
 
         private string fileTempPath;
@@ -32,5 +33,12 @@ namespace Epub_Editor.AppCore
         public string OriginalFileHash { get => originalFileHash; set => originalFileHash = value; }
         public string XhtmlContends { get => xhtmlContends; set => xhtmlContends = value; }
         public bool HasEdited { get => hasEdited; set => hasEdited = value; }
+
+        public void Dispose() 
+        {
+
+            Dispose();
+
+        }
     }
 }

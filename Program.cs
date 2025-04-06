@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Epub_Editor
+using EpubEditor.Forms;
+
+namespace EpubEditor
 {
     internal static class Program
     {

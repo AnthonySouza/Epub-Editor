@@ -1,4 +1,5 @@
-﻿using Epub_Editor.AppCore;
+﻿using EpubEditor.Editor;
+using EpubEditor.Epub.Metadata;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

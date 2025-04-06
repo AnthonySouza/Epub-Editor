@@ -1,4 +1,6 @@
-﻿using Epub_Editor.AppCore;
+﻿using Epub_Editor.Forms.MetadataForms;
+using EpubEditor.Editor;
+using EpubEditor.Epub.Metadata;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Epub_Editor.Forms.MetadataForms
+namespace EpubEditor.Forms.MetadataForms
 {
     public partial class MetadataForm : Form
     {
@@ -47,7 +49,7 @@ namespace Epub_Editor.Forms.MetadataForms
 
         }
 
-        private void AddMetadataForm_SendProperty(AppCore.MetadataItem obj)
+        private void AddMetadataForm_SendProperty(MetadataItem obj)
         {
             MessageBox.Show(obj.Info);
         }
@@ -61,7 +63,7 @@ namespace Epub_Editor.Forms.MetadataForms
             addMetadataPropertyForm.ShowDialog(this);
         }
 
-        private void AddMetadataPropertyForm_SendMetadataProperty(AppCore.MetadataProperty obj)
+        private void AddMetadataPropertyForm_SendMetadataProperty(MetadataProperty obj)
         {
             MessageBox.Show(obj.Info);
         }

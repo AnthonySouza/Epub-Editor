@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using Epub_Editor.AppCore;
+using EpubEditor.Editor;
+using EpubEditor.Epub.Metadata;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Epub_Editor.Forms.MetadataForms

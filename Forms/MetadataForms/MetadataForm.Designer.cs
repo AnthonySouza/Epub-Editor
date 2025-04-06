@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Epub_Editor.Forms.MetadataForms
+namespace EpubEditor.Forms.MetadataForms
 {
     partial class MetadataForm : Form
     {
